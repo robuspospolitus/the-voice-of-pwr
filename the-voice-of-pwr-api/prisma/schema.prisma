@@ -8,10 +8,10 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  name        String
-  mail        String   @unique
-  hashedPass  String   @map("hashed_pass")
+  id         Int      @id @default(autoincrement())
+  name       String
+  mail       String   @unique
+  hashedPass String   @map("hashed_pass")
 
   lecturerOpinions LecturerOpinion[]
   dormOpinions     DormOpinion[]
@@ -21,21 +21,22 @@ model User {
 }
 
 model Lecturer {
-  id        Int      @id @default(autoincrement())
-  name      String
-  surname   String
-  mail      String
+  id      Int    @id @default(autoincrement())
+  name    String
+  surname String
+  mail    String
 
-  faculties LecturerFaculty[]
-  classes   LecturerClass[]
-  opinions  LecturerOpinion[]
+  faculties          LecturerFaculty[]
+  classes            LecturerClass[]
+  opinions           LecturerOpinion[]
+  coordinatedCourses Course[]          @relation("CourseCoordinator")
 
   @@map("lecturers")
 }
 
 model Faculty {
-  shortcut  String   @id
-  fullName  String   @map("full_name")
+  shortcut String @id
+  fullName String @map("full_name")
 
   fieldsOfStudy   FieldOfStudy[]
   lecturerFaculty LecturerFaculty[]
@@ -44,99 +45,101 @@ model Faculty {
 }
 
 model FieldOfStudy {
-  shortcut         String   @id
-  fullName         String   @map("full_name")
-  facultyShortcut  String   @map("faculty_shortcut")
+  shortcut        String @id
+  fullName        String @map("full_name")
+  facultyShortcut String @map("faculty_shortcut")
 
-  faculty  Faculty  @relation(fields: [facultyShortcut], references: [shortcut])
-  courses  Course[]
+  faculty Faculty  @relation(fields: [facultyShortcut], references: [shortcut])
+  courses Course[]
 
   @@map("field_of_study")
 }
 
 model LecturerFaculty {
-  id               Int      @id @default(autoincrement())
-  lecturerId       Int      @map("lecturer_id")
-  facultyShortcut  String   @map("faculty_shortcut")
+  id              Int    @id @default(autoincrement())
+  lecturerId      Int    @map("lecturer_id")
+  facultyShortcut String @map("faculty_shortcut")
 
-  lecturer  Lecturer @relation(fields: [lecturerId], references: [id])
-  faculty   Faculty  @relation(fields: [facultyShortcut], references: [shortcut])
+  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
+  faculty  Faculty  @relation(fields: [facultyShortcut], references: [shortcut])
 
   @@map("lecturers_faculty")
 }
 
 model Course {
-  id                    Int      @id @default(autoincrement())
-  fullName              String   @map("full_name")
-  fieldOfStudyShortcut  String   @map("field_of_study_shortcut")
-  semester              String?
+  id                   Int     @id @default(autoincrement())
+  fullName             String  @map("full_name")
+  fieldOfStudyShortcut String  @map("field_of_study_shortcut")
+  coordinatorId        Int?    @map("coordinator_id")
+  semester             String?
 
-  fieldOfStudy     FieldOfStudy    @relation(fields: [fieldOfStudyShortcut], references: [shortcut])
-  lecturerClasses  LecturerClass[]
-  opinions         CourseOpinion[]
+  fieldOfStudy    FieldOfStudy    @relation(fields: [fieldOfStudyShortcut], references: [shortcut])
+  coordinator     Lecturer?       @relation("CourseCoordinator", fields: [coordinatorId], references: [id])
+  lecturerClasses LecturerClass[]
+  opinions        CourseOpinion[]
 
   @@map("courses")
 }
 
 model LecturerClass {
-  id          Int  @id @default(autoincrement())
-  lecturerId  Int  @map("lecturer_id")
-  courseId    Int  @map("course_id")
+  id         Int @id @default(autoincrement())
+  lecturerId Int @map("lecturer_id")
+  courseId   Int @map("course_id")
 
-  lecturer  Lecturer @relation(fields: [lecturerId], references: [id])
-  course    Course   @relation(fields: [courseId], references: [id])
+  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
+  course   Course   @relation(fields: [courseId], references: [id])
 
   @@map("lecturer_classes")
 }
 
 model Dorm {
-  shortcut      String  @id
-  fullName      String  @map("full_name")
-  localization  String
-  capacity      Int
+  shortcut     String @id
+  fullName     String @map("full_name")
+  localization String
+  capacity     Int
 
-  opinions  DormOpinion[]
+  opinions DormOpinion[]
 
   @@map("dorms")
 }
 
 model LecturerOpinion {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @map("user_id")
-  lecturerId  Int      @map("lecturer_id")
+  id          Int     @id @default(autoincrement())
+  userId      Int     @map("user_id")
+  lecturerId  Int     @map("lecturer_id")
   stars       Int
   description String?
 
-  user      User     @relation(fields: [userId], references: [id])
-  lecturer  Lecturer @relation(fields: [lecturerId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
 
   @@unique([userId, lecturerId])
   @@map("lecturer_opinions")
 }
 
 model DormOpinion {
-  id            Int      @id @default(autoincrement())
-  userId        Int      @map("user_id")
-  dormShortcut  String   @map("dorm_shortcut")
-  stars         Int
-  description   String?
+  id           Int     @id @default(autoincrement())
+  userId       Int     @map("user_id")
+  dormShortcut String  @map("dorm_shortcut")
+  stars        Int
+  description  String?
 
-  user  User  @relation(fields: [userId], references: [id])
-  dorm  Dorm  @relation(fields: [dormShortcut], references: [shortcut])
+  user User @relation(fields: [userId], references: [id])
+  dorm Dorm @relation(fields: [dormShortcut], references: [shortcut])
 
   @@unique([userId, dormShortcut])
   @@map("dorm_opinions")
 }
 
 model CourseOpinion {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @map("user_id")
-  courseId    Int      @map("course_id")
+  id          Int     @id @default(autoincrement())
+  userId      Int     @map("user_id")
+  courseId    Int     @map("course_id")
   stars       Int
   description String?
 
-  user    User    @relation(fields: [userId], references: [id])
-  course  Course  @relation(fields: [courseId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
 
   @@unique([userId, courseId])
   @@map("course_opinions")
