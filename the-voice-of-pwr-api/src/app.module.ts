@@ -13,10 +13,21 @@ import { LecturersFacultyModule } from './lecturers_faculty/lecturers_faculty.mo
 import { FacultiesModule } from './faculties/faculties.module';
 import { FieldsOfStudyModule } from './fields_of_study/fields_of_study.module';
 import { DormOpinionsModule } from './dorm_opinions/dorm_opinions.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [DatabaseModule, CoursesModule, CourseOpinionsModule, DormsModule, LecturerOpinionsModule, LecturersModule, LecturerClassesModule, LecturersFacultyModule, FacultiesModule, FieldsOfStudyModule, DormOpinionsModule, UsersModule],
+  imports: [
+    DatabaseModule,
+    CoursesModule,
+    CourseOpinionsModule,
+    DormsModule,
+    LecturerOpinionsModule,
+    LecturersModule,
+    LecturerClassesModule,
+    LecturersFacultyModule,
+    FacultiesModule,
+    FieldsOfStudyModule,
+    DormOpinionsModule,
+  ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
 })
