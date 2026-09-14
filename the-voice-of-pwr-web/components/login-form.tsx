@@ -36,12 +36,12 @@ export default function LoginForm() {
   });
 
   function onSubmit(values: LoginFormValues) {
-    console.log("Wartości: ", values);
+    console.log("Values: ", values);
     // Tutaj logika do logowania jak cos
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto p-5 border-0">
+    <Card className="w-full max-w-md mx-auto p-5 ring-0 lg:ring ">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-semibold my-2">
           The Voice of <span className="font-extrabold text-prim ">PWR</span>

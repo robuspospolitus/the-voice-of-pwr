@@ -62,7 +62,7 @@ export default function SignupForm() {
   };
 
   return (
-    <Card className="max-w-md mx-auto p-2 md:p-5 w-full">
+    <Card className="max-w-md mx-auto p-2 md:p-5 w-full ring-0 lg:ring">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-semibold my-2">
           The Voice of <span className="font-extrabold text-prim">PWR</span>
@@ -167,7 +167,7 @@ export default function SignupForm() {
           Masz już konto?
           <Link
             className="mx-1 text-prim font-medium hover:underline"
-            href={"/login"}
+            href={"/signin"}
           >
             Zaloguj się tutaj.
           </Link>
