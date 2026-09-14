@@ -2,7 +2,7 @@ import SignupForm from "@/components/signup-form";
 
 export default function Signup() {
   return (
-    <main className="overflow-hidden h-screen flex justify-center items-center">
+    <main className="overflow-x-hidden h-screen flex justify-center items-center">
       <SignupForm />
     </main>
   );

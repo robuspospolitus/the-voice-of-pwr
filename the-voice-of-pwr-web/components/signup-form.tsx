@@ -50,24 +50,26 @@ export default function SignupForm() {
   });
 
   const onSubmit = async (values: SignupFormValues) => {
-    try {
-      console.log("Dane poprawne, wysłano:", values);
-      router.push("/login");
-    } catch (error) {
-      console.error("Blad rejestracji", error);
-    }
+    // LOGIKA LOGOWANIA
+    // try {
+    //   console.log("Dane poprawne, wysłano:", values);
+    //   router.push("/login");
+    // } catch (error) {
+    //   console.error("Blad rejestracji", error);
+    // }
 
     console.log(values);
   };
 
   return (
-    <Card className="max-w-md mx-auto p-5 w-full">
+    <Card className="max-w-md mx-auto p-2 md:p-5 w-full">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-semibold">
-          The Voice of PWR
+        <CardTitle className="text-3xl font-semibold my-2">
+          The Voice of <span className="font-extrabold text-prim">PWR</span>
         </CardTitle>
         <CardDescription className="text-[16px]">
-          Entry username, email and password below to signUp!
+          Wprowadź swoje imię, nazwisko, adres emial i hasło aby się
+          zarejstrować!
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -76,7 +78,7 @@ export default function SignupForm() {
           className="space-y-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="space-y-2 flex flex-col gap-1">
+          <div className="space-y-2 flex flex-col">
             <label htmlFor="name">
               Name <span className="text-red-500">*</span>
             </label>
@@ -84,7 +86,7 @@ export default function SignupForm() {
               className="border-0 outline-0 bg-neutral-200/80 py-5 text-start"
               id="name"
               type="name"
-              placeholder="John Eddison"
+              placeholder="Adam Nowak"
               aria-invalid={!!errors.name}
               {...register("name")}
               required
@@ -96,7 +98,7 @@ export default function SignupForm() {
             )}
           </div>
 
-          <div className="space-y-2 flex flex-col gap-1">
+          <div className="space-y-2 flex flex-col ">
             <label htmlFor="email">
               Email <span className="text-red-500">*</span>
             </label>
@@ -115,16 +117,16 @@ export default function SignupForm() {
             )}
           </div>
 
-          <div className="space-y-2 flex flex-col gap-1">
+          <div className="space-y-2 flex flex-col">
             <label htmlFor="password">
-              Password <span className="text-red-500">*</span>
+              Hasło <span className="text-red-500">*</span>
             </label>
             <Input
               className="border-0 outline-0 bg-neutral-200/80 py-5 text-start"
               required
               id="password"
               type="password"
-              placeholder="Entry password"
+              placeholder="Wprowadź hasło"
               {...register("password")}
             />
             {errors.password && (
@@ -134,16 +136,16 @@ export default function SignupForm() {
             )}
           </div>
 
-          <div className="space-y-2 flex flex-col gap-1">
+          <div className="space-y-2 flex flex-col ">
             <label htmlFor="confirmPassword">
-              Confirm Password <span className="text-red-500">*</span>
+              Powtórz hasło <span className="text-red-500">*</span>
             </label>
             <Input
               className="border-0 outline-0 bg-neutral-200/80 py-5 text-start"
               required
               id="confirmPassword"
               type="password"
-              placeholder="Confirm password"
+              placeholder="Powtórz hasło"
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
@@ -154,20 +156,20 @@ export default function SignupForm() {
           </div>
           <Button
             type="submit"
-            className="w-full py-5 cursor-pointer font-normal"
+            className="w-full py-5 cursor-pointer font-normal bg-prim hover:bg-prim/80"
           >
-            Zarejestruj sie
+            Zarejestruj się
           </Button>
         </form>
       </CardContent>
-      <CardFooter>
-        <CardDescription>
-          Don't have an account?
+      <CardFooter className="flex flex-col bg-white">
+        <CardDescription className="pt-2">
+          Masz już konto?
           <Link
-            className="mx-1 text-neutral-500 hover:underline"
+            className="mx-1 text-prim font-medium hover:underline"
             href={"/login"}
           >
-            Sign in here
+            Zaloguj się tutaj.
           </Link>
         </CardDescription>
       </CardFooter>
