@@ -1,4 +1,3 @@
-import { FaFlag } from "react-icons/fa6";
 import Link from "next/link";
 import {
   Card,

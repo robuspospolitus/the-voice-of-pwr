@@ -1,4 +1,4 @@
-import LecturerCard from "@/components/lecturer-card";
+import LecturerCard from "@/components/LecturerCard";
 import Link from "next/link";
 
 export default function Home() {
