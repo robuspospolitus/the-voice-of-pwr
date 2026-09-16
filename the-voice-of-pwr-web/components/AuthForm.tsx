@@ -78,10 +78,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const onSubmit = (values: RegisterFormValues) => console.log(values);
+  const onSubmit = (values: RegisterFormValues) => {
+    console.log(values);
+  };
 
   return (
-    <Card className="w-full max-w-md mx-auto p-5 ring-0 lg:ring">
+    <Card variant="authForms">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-semibold ">
           The Voice of PWR
@@ -103,14 +105,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
             if (field.signUpOnly && !isSignUp) return null;
             return (
               <div key={field.id} className="flex flex-col">
-                <label htmlFor={field.id} className="text-sm font-medium ">
+                <label htmlFor={field.id} className="text-sm font-medium mb-1">
                   {field.label} <span className="text-red-700">*</span>
                 </label>
                 <Input
                   id={field.id}
                   type={field.type}
                   placeholder={field.placeholder}
-                  className="border-0 bg-neutral-200/80 py-5"
+                  variant="authForms"
                   {...register(field.id as keyof RegisterFormValues)}
                 />
                 {errors[field.id as keyof RegisterFormValues] && (
@@ -125,10 +127,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               </div>
             );
           })}
-          <Button
-            type="submit"
-            className="w-full py-5 font-normal bg-prim hover:bg-prim/80"
-          >
+          <Button type="submit" variant="forms">
             {isSignUp ? "Zarejestruj się" : "Zaloguj się"}
           </Button>
         </form>
