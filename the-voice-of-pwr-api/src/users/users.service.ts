@@ -1,26 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private db: DatabaseService) {}
+
+  findByEmail(email: string) {
+    return this.db.user.findUnique({ where: { mail: email } });
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findById(id: number) {
+    return this.db.user.findUnique({ where: { id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  create(data: { name: string; mail: string; hashedPass: string }) {
+    return this.db.user.create({ data });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async update(id: number, data: { name?: string; email?: string; password?: string }) {
+    const updateData: any = {};
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    if (data.name) updateData.name = data.name;
+    if (data.email) updateData.mail = data.email;
+    if (data.password) updateData.hashedPass = await bcrypt.hash(data.password, 10);
+
+    return this.db.user.update({ where: { id }, data: updateData });
   }
 }
