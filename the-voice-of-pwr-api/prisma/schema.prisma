@@ -113,7 +113,7 @@ model LecturerOpinion {
   id          Int     @id @default(autoincrement())
   userId      Int     @map("user_id")
   lecturerId  Int     @map("lecturer_id")
-  rate       Float
+  rating     Float
   description String?
 
   user     User     @relation(fields: [userId], references: [id])
@@ -127,7 +127,7 @@ model DormOpinion {
   id           Int     @id @default(autoincrement())
   userId       Int     @map("user_id")
   dormShortcut String  @map("dorm_shortcut")
-  rate        Float
+  rating       Float
   description  String?
 
   user User @relation(fields: [userId], references: [id])
@@ -141,7 +141,7 @@ model CourseOpinion {
   id          Int     @id @default(autoincrement())
   userId      Int     @map("user_id")
   courseId    Int     @map("course_id")
-  rate      Float
+  rating     Float
   description String?
 
   user   User   @relation(fields: [userId], references: [id])
