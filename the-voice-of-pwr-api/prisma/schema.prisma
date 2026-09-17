@@ -7,11 +7,17 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id         Int      @id @default(autoincrement())
   name       String
   mail       String   @unique
   hashedPass String   @map("hashed_pass")
+  role      UserRole @default(USER)
 
   lecturerOpinions LecturerOpinion[]
   dormOpinions     DormOpinion[]
@@ -107,7 +113,7 @@ model LecturerOpinion {
   id          Int     @id @default(autoincrement())
   userId      Int     @map("user_id")
   lecturerId  Int     @map("lecturer_id")
-  stars       Int
+  rate       Float
   description String?
 
   user     User     @relation(fields: [userId], references: [id])
@@ -121,7 +127,7 @@ model DormOpinion {
   id           Int     @id @default(autoincrement())
   userId       Int     @map("user_id")
   dormShortcut String  @map("dorm_shortcut")
-  stars        Int
+  rate        Float
   description  String?
 
   user User @relation(fields: [userId], references: [id])
@@ -135,7 +141,7 @@ model CourseOpinion {
   id          Int     @id @default(autoincrement())
   userId      Int     @map("user_id")
   courseId    Int     @map("course_id")
-  stars       Int
+  rate      Float
   description String?
 
   user   User   @relation(fields: [userId], references: [id])
