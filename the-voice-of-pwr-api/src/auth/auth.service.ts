@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
+
+  async register(dto: RegisterDto) {
+    const existing = await this.usersService.findByEmail(dto.email);
+    if (existing) {
+      throw new ConflictException('Użytkownik z tym adresem email już istnieje');
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    const user = await this.usersService.create({
+      name: dto.name,
+      mail: dto.email,
+      hashedPass: hashedPassword,
+    });
+
+    const { hashedPass, ...result } = user;
+    return result;
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async login(dto: LoginDto) {
+    const user = await this.usersService.findByEmail(dto.email);
+    if (!user) {
+      throw new UnauthorizedException('Nieprawidłowy email lub hasło');
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    const passwordMatches = await bcrypt.compare(dto.password, user.hashedPass);
+    if (!passwordMatches) {
+      throw new UnauthorizedException('Nieprawidłowy email lub hasło');
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    const payload = {
+      sub: user.id,
+      email: user.mail,
+      role: user.role,
+      timestamp: Date.now(),
+    };
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return { access_token: this.jwtService.sign(payload) };
   }
 }
