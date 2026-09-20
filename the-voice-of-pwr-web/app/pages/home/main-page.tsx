@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   Search,
   MessageSquare,
@@ -28,11 +29,10 @@ export default function HomePage() {
         <section className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-              Społeczność akademicka
+              Studenci Politechniki Wrocławskiej    
             </h1>
             <p className="text-base text-zinc-600 leading-relaxed">
-              Przeglądaj materiały z wykładów, ogłoszenia kół naukowych oraz
-              dołącz do dyskusji o życiu studenckim.
+              Notatki, opinie, projekty i studenckie forum. Dołącz do społeczności politechnicznej i bądź na bieżąco.
             </p>
           </div>
           <div className="relative w-full md:w-80 shrink-0">
@@ -76,71 +76,76 @@ export default function HomePage() {
 
             <div className="space-y-4">
               {HOT_TOPICS.map((topic) => (
-                <div
+                <Link
                   key={topic.id}
-                  className="group bg-white border border-[#263A99]/10 p-4 rounded-lg flex gap-4 transition-all hover:border-[#97B4DE] shadow-sm"
+                  href={`/discussions/${topic.id}`}
+                  className="block group"
                 >
-                  <div className="flex flex-col items-center gap-1 shrink-0">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="w-8 h-8 text-zinc-400 hover:text-[#263A99] hover:bg-[#97B4DE]/20 rounded-md"
-                    >
-                      <ArrowUp className="w-4 h-4" />
-                    </Button>
-                    <span className="text-sm font-medium text-[#263A99]">
-                      {topic.upvotes}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="w-8 h-8 text-zinc-400 hover:text-[#263A99] hover:bg-[#97B4DE]/20 rounded-md"
-                    >
-                      <ArrowDown className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  <div
+                    className="bg-white border border-[#263A99]/10 p-4 rounded-lg flex gap-4 transition-all hover:border-[#97B4DE] shadow-sm"
+                  >
+                    <div className="flex flex-col items-center gap-1 shrink-0" onClick={(e) => e.preventDefault()}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="w-8 h-8 text-zinc-400 hover:text-[#263A99] hover:bg-[#97B4DE]/20 rounded-md"
+                      >
+                        <ArrowUp className="w-4 h-4" />
+                      </Button>
+                      <span className="text-sm font-medium text-[#263A99]">
+                        {topic.upvotes}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="w-8 h-8 text-zinc-400 hover:text-[#263A99] hover:bg-[#97B4DE]/20 rounded-md"
+                      >
+                        <ArrowDown className="w-4 h-4" />
+                      </Button>
+                    </div>
 
-                  <div className="flex-1 min-w-0 py-1">
-                    <div className="flex flex-wrap items-center gap-2 text-xs mb-2">
-                      {topic.isPinned && (
-                        <span className="flex items-center gap-1 text-[#263A99] font-semibold bg-[#97B4DE]/20 px-2 py-0.5 rounded-sm">
-                          <Pin className="w-3 h-3" /> Przypięty
+                    <div className="flex-1 min-w-0 py-1">
+                      <div className="flex flex-wrap items-center gap-2 text-xs mb-2">
+                        {topic.isPinned && (
+                          <span className="flex items-center gap-1 text-[#263A99] font-semibold bg-[#97B4DE]/20 px-2 py-0.5 rounded-sm">
+                            <Pin className="w-3 h-3" /> Przypięty
+                          </span>
+                        )}
+                        <span className="text-zinc-600 hover:text-[#263A99] transition-colors font-medium">
+                          {topic.category}
                         </span>
-                      )}
-                      <span className="text-zinc-600 hover:text-[#263A99] cursor-pointer transition-colors font-medium">
-                        {topic.category}
-                      </span>
-                      <span className="text-[#97B4DE]">•</span>
-                      <span className="text-zinc-500">
-                        przez {topic.author.name}
-                      </span>
-                      <span className="text-[#97B4DE]">•</span>
-                      <span className="text-zinc-500">{topic.createdAt}</span>
-                    </div>
-
-                    <h3 className="text-base font-semibold text-zinc-900 hover:text-[#263A99] cursor-pointer leading-tight mb-3 transition-colors">
-                      {topic.title}
-                    </h3>
-
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {topic.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-[11px] font-medium text-[#263A99] bg-[#97B4DE]/20 px-2 py-0.5 rounded-sm"
-                        >
-                          {tag}
+                        <span className="text-[#97B4DE]">•</span>
+                        <span className="text-zinc-500">
+                          przez {topic.author.name}
                         </span>
-                      ))}
-                    </div>
+                        <span className="text-[#97B4DE]">•</span>
+                        <span className="text-zinc-500">{topic.createdAt}</span>
+                      </div>
 
-                    <div className="flex items-center gap-4 text-xs text-zinc-500 font-medium">
-                      <span className="flex items-center gap-1.5 hover:text-[#263A99] cursor-pointer transition-colors">
-                        <MessageSquare className="w-3.5 h-3.5 text-[#97B4DE]" />
-                        {topic.replies} komentarzy
-                      </span>
+                      <h3 className="text-base font-semibold text-zinc-900 group-hover:text-[#263A99] leading-tight mb-3 transition-colors">
+                        {topic.title}
+                      </h3>
+
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {topic.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="text-[11px] font-medium text-[#263A99] bg-[#97B4DE]/20 px-2 py-0.5 rounded-sm"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center gap-4 text-xs text-zinc-500 font-medium">
+                        <span className="flex items-center gap-1.5 hover:text-[#263A99] transition-colors">
+                          <MessageSquare className="w-3.5 h-3.5 text-[#97B4DE]" />
+                          {topic.replies} komentarzy
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 
@@ -176,9 +181,13 @@ export default function HomePage() {
                     <span className="font-medium text-[#263A99]">842</span>
                   </div>
                 </div>
-                <Button className="w-full bg-[#263A99] text-white hover:bg-[#263A99]/90 shadow-none rounded-md h-9 mt-2">
+                <Link
+                href="/discussions/create-thread"
+  
+                className="mt-2 inline-flex h-9 w-full items-center justify-center rounded-md bg-[#263A99] px-4 text-sm font-medium text-white shadow-none transition-colors hover:bg-[#263A99]/90"
+                >
                   Utwórz wątek
-                </Button>
+                </Link>
               </CardContent>
             </Card>
 
