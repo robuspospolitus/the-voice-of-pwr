@@ -12,7 +12,7 @@ export class CourseOpinionsService {
     createCourseOpinionDto: CreateCourseOpinionDto,
   ): Promise<CourseOpinion> {
     const [course, user] = await Promise.all([
-      this.databaseService.lecturer.findUnique({
+      this.databaseService.course.findUnique({
         where: { id: createCourseOpinionDto.courseId },
       }),
       this.databaseService.user.findUnique({

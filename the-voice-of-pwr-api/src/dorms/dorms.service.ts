@@ -1,26 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDormDto } from './dto/create-dorm.dto';
 import { UpdateDormDto } from './dto/update-dorm.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { Dorm } from 'generated/prisma/client';
 
 @Injectable()
 export class DormsService {
-  create(createDormDto: CreateDormDto) {
-    return 'This action adds a new dorm';
+  constructor(private databaseService: DatabaseService) {}
+
+  async create(createDormDto: CreateDormDto): Promise<Dorm> {
+    return this.databaseService.dorm.create({
+      data: {
+        shortcut: createDormDto.shortcut,
+        fullName: createDormDto.fullName,
+        localization: createDormDto.localization,
+        capacity: createDormDto.capacity,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all dorms`;
+  async findAll(): Promise<Dorm[]> {
+    return this.databaseService.dorm.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dorm`;
+  async findOne(shortcut: string): Promise<Dorm> {
+    const dorm = await this.databaseService.dorm.findUnique({
+      where: { shortcut },
+    });
+    if (!dorm) {
+      throw new NotFoundException(`Dorm with shortcut ${shortcut} not found`);
+    }
+    return dorm;
   }
 
-  update(id: number, updateDormDto: UpdateDormDto) {
-    return `This action updates a #${id} dorm`;
+  async update(shortcut: string, updateDormDto: UpdateDormDto): Promise<Dorm> {
+    await this.findOne(shortcut);
+    return this.databaseService.dorm.update({
+      where: { shortcut },
+      data: {
+        shortcut: updateDormDto.shortcut,
+        fullName: updateDormDto.fullName,
+        localization: updateDormDto.localization,
+        capacity: updateDormDto.capacity,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dorm`;
+  async remove(shortcut: string): Promise<Dorm> {
+    await this.findOne(shortcut);
+    return this.databaseService.dorm.delete({
+      where: { shortcut },
+    });
   }
 }
