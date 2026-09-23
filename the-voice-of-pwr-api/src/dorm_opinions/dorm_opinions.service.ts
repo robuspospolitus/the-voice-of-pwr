@@ -1,26 +1,80 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDormOpinionDto } from './dto/create-dorm_opinion.dto';
 import { UpdateDormOpinionDto } from './dto/update-dorm_opinion.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { DormOpinion } from 'generated/prisma/client';
 
 @Injectable()
 export class DormOpinionsService {
-  create(createDormOpinionDto: CreateDormOpinionDto) {
-    return 'This action adds a new dormOpinion';
+  constructor(private databaseService: DatabaseService) {}
+
+  async create(
+    createDormOpinionDto: CreateDormOpinionDto,
+  ): Promise<DormOpinion> {
+    const [user, dorm] = await Promise.all([
+      this.databaseService.user.findUnique({
+        where: { id: createDormOpinionDto.userId },
+      }),
+      this.databaseService.dorm.findUnique({
+        where: { shortcut: createDormOpinionDto.dormShortcut },
+      }),
+    ]);
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with ID ${createDormOpinionDto.userId} not found`,
+      );
+    }
+    if (!dorm) {
+      throw new NotFoundException(
+        `Dorm with shortcut ${createDormOpinionDto.dormShortcut} not found`,
+      );
+    }
+
+    return this.databaseService.dormOpinion.create({
+      data: {
+        userId: createDormOpinionDto.userId,
+        dormShortcut: createDormOpinionDto.dormShortcut,
+        stars: createDormOpinionDto.stars,
+        description: createDormOpinionDto.description,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all dormOpinions`;
+  async findAll(): Promise<DormOpinion[]> {
+    return this.databaseService.dormOpinion.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dormOpinion`;
+  async findOne(id: number): Promise<DormOpinion> {
+    const opinion = await this.databaseService.dormOpinion.findUnique({
+      where: { id },
+    });
+    if (!opinion) {
+      throw new NotFoundException(`DormOpinion with id ${id} not found`);
+    }
+    return opinion;
   }
 
-  update(id: number, updateDormOpinionDto: UpdateDormOpinionDto) {
-    return `This action updates a #${id} dormOpinion`;
+  async update(
+    id: number,
+    updateDormOpinionDto: UpdateDormOpinionDto,
+  ): Promise<DormOpinion> {
+    await this.findOne(id);
+    return this.databaseService.dormOpinion.update({
+      where: { id },
+      data: {
+        userId: updateDormOpinionDto.userId,
+        dormShortcut: updateDormOpinionDto.dormShortcut,
+        stars: updateDormOpinionDto.stars,
+        description: updateDormOpinionDto.description,
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dormOpinion`;
+  async remove(id: number): Promise<DormOpinion> {
+    await this.findOne(id);
+    return this.databaseService.dormOpinion.delete({
+      where: { id },
+    });
   }
 }
