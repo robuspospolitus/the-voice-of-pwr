@@ -13,25 +13,13 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-
-const loginSchema = z.object({
-  email: z.string().email("Podaj poprawny adres email"),
-  password: z.string().min(8, "Minimum 8 znaków"),
-});
-
-const registerSchema = loginSchema
-  .extend({
-    name: z.string().min(1, "Podaj nazwę użytkownika"),
-    confirmPassword: z.string().min(1, "Potwierdź hasło"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Hasła nie są identyczne",
-    path: ["confirmPassword"],
-  });
-
-type LoginFormValues = z.infer<typeof loginSchema>;
-type RegisterFormValues = z.infer<typeof registerSchema>;
-type AuthFormValues = LoginFormValues | RegisterFormValues;
+import {
+  AuthFormValues,
+  RegisterFormValues,
+  LoginFormValues,
+  registerSchema,
+  loginSchema,
+} from "@/lib/schema/authFormSchema";
 
 interface AuthFormProps {
   mode: "signin" | "signup";
@@ -125,10 +113,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               </div>
             );
           })}
-          <Button
-            type="submit"
-            className="w-full py-5 font-normal bg-prim hover:bg-prim/80"
-          >
+          <Button type="submit" variant="form">
             {isSignUp ? "Zarejestruj się" : "Zaloguj się"}
           </Button>
         </form>

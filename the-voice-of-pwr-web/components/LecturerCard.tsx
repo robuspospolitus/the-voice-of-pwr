@@ -7,16 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-
-interface LecturerCardProps {
-  id: string;
-  username: string;
-  date: string;
-  course: string;
-  title: string;
-  description: string;
-  grade: string;
-}
+import { LecturerCardProps } from "@/lib/types/opinionCard";
 
 export default function LecturerCard(props: LecturerCardProps) {
   return (
