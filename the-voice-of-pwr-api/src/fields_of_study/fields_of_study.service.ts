@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFieldsOfStudyDto } from './dto/create-fields_of_study.dto';
-import { UpdateFieldsOfStudyDto } from './dto/update-fields_of_study.dto';
+import { CreateFieldOfStudyDto } from './dto/create-fields_of_study.dto';
+import { UpdateFieldOfStudyDto } from './dto/update-fields_of_study.dto';
 
 @Injectable()
 export class FieldsOfStudyService {
-  create(createFieldsOfStudyDto: CreateFieldsOfStudyDto) {
+  create(createFieldsOfStudyDto: CreateFieldOfStudyDto) {
     return 'This action adds a new fieldsOfStudy';
   }
 
@@ -16,7 +16,7 @@ export class FieldsOfStudyService {
     return `This action returns a #${id} fieldsOfStudy`;
   }
 
-  update(id: number, updateFieldsOfStudyDto: UpdateFieldsOfStudyDto) {
+  update(id: number, updateFieldsOfStudyDto: UpdateFieldOfStudyDto) {
     return `This action updates a #${id} fieldsOfStudy`;
   }
 

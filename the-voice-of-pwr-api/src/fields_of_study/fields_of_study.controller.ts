@@ -1,14 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { FieldsOfStudyService } from './fields_of_study.service';
-import { CreateFieldsOfStudyDto } from './dto/create-fields_of_study.dto';
-import { UpdateFieldsOfStudyDto } from './dto/update-fields_of_study.dto';
+import { CreateFieldOfStudyDto } from './dto/create-fields_of_study.dto';
+import { UpdateFieldOfStudyDto } from './dto/update-fields_of_study.dto';
 
 @Controller('fields-of-study')
 export class FieldsOfStudyController {
   constructor(private readonly fieldsOfStudyService: FieldsOfStudyService) {}
 
   @Post()
-  create(@Body() createFieldsOfStudyDto: CreateFieldsOfStudyDto) {
+  create(@Body() createFieldsOfStudyDto: CreateFieldOfStudyDto) {
     return this.fieldsOfStudyService.create(createFieldsOfStudyDto);
   }
 
@@ -23,7 +31,10 @@ export class FieldsOfStudyController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFieldsOfStudyDto: UpdateFieldsOfStudyDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateFieldsOfStudyDto: UpdateFieldOfStudyDto,
+  ) {
     return this.fieldsOfStudyService.update(+id, updateFieldsOfStudyDto);
   }
 
