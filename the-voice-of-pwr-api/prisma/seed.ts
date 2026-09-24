@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { PrismaClient } from '../generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import * as bcrypt from 'bcrypt';
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
@@ -10,7 +11,21 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('Start seedowania bazy...');
-  console.log('DATABASE_URL:', process.env.DATABASE_URL);
+
+  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+    throw new Error('Brak ADMIN_EMAIL lub ADMIN_PASSWORD w .env');
+  }
+
+  await prisma.user.upsert({
+    where: { mail: process.env.ADMIN_EMAIL },
+    update: {},
+    create: {
+      name: 'Admin',
+      mail: process.env.ADMIN_EMAIL,
+      hashedPass: await bcrypt.hash(process.env.ADMIN_PASSWORD, 10),
+      role: 'ADMIN',
+    },
+  });
 
   const facultyW4 = await prisma.faculty.create({
     data: { shortcut: 'W4', fullName: 'Wydział Informatyki i Telekomunikacji' },
@@ -29,7 +44,7 @@ async function main() {
     data: {
       name: 'Janek',
       mail: 'janek@student.edu.pl',
-      hashedPass: 'bcrypt_hashed_string',
+      hashedPass: await bcrypt.hash('haslo123', 10),
     },
   });
 
@@ -93,7 +108,7 @@ async function main() {
     },
   });
 
-  console.log('Baza została zasiliona przykładowymi danymi!');
+  console.log(`Gotowe! Admin: ${process.env.ADMIN_EMAIL} / (hasło z .env), User: janek@student.edu.pl / haslo123`);
 }
 
 main()
