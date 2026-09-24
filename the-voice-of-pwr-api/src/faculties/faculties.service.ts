@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
 import { UpdateFacultyDto } from './dto/update-faculty.dto';
 
 @Injectable()
 export class FacultiesService {
-  create(createFacultyDto: CreateFacultyDto) {
-    return 'This action adds a new faculty';
+  constructor(private db: DatabaseService) {}
+
+  create(dto: CreateFacultyDto) {
+    return this.db.faculty.create({ data: dto });
   }
 
   findAll() {
-    return `This action returns all faculties`;
+    return this.db.faculty.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} faculty`;
+  async findOne(shortcut: string) {
+    const faculty = await this.db.faculty.findUnique({ where: { shortcut } });
+    if (!faculty) throw new NotFoundException('Wydział nie istnieje');
+    return faculty;
   }
 
-  update(id: number, updateFacultyDto: UpdateFacultyDto) {
-    return `This action updates a #${id} faculty`;
+  async update(shortcut: string, dto: UpdateFacultyDto) {
+    await this.findOne(shortcut);
+    return this.db.faculty.update({ where: { shortcut }, data: dto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} faculty`;
+  async remove(shortcut: string) {
+    await this.findOne(shortcut);
+    return this.db.faculty.delete({ where: { shortcut } });
   }
 }

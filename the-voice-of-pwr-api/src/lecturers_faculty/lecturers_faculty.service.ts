@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service';
 import { CreateLecturersFacultyDto } from './dto/create-lecturers_faculty.dto';
 import { UpdateLecturersFacultyDto } from './dto/update-lecturers_faculty.dto';
 
 @Injectable()
 export class LecturersFacultyService {
-  create(createLecturersFacultyDto: CreateLecturersFacultyDto) {
-    return 'This action adds a new lecturersFaculty';
+  constructor(private db: DatabaseService) {}
+
+  create(dto: CreateLecturersFacultyDto) {
+    return this.db.lecturerFaculty.create({ data: dto });
   }
 
   findAll() {
-    return `This action returns all lecturersFaculty`;
+    return this.db.lecturerFaculty.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lecturersFaculty`;
+  async findOne(id: number) {
+    const record = await this.db.lecturerFaculty.findUnique({ where: { id } });
+    if (!record) throw new NotFoundException('Powiązanie nie istnieje');
+    return record;
   }
 
-  update(id: number, updateLecturersFacultyDto: UpdateLecturersFacultyDto) {
-    return `This action updates a #${id} lecturersFaculty`;
+  async update(id: number, dto: UpdateLecturersFacultyDto) {
+    await this.findOne(id);
+    return this.db.lecturerFaculty.update({ where: { id }, data: dto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} lecturersFaculty`;
+  async remove(id: number) {
+    await this.findOne(id);
+    return this.db.lecturerFaculty.delete({ where: { id } });
   }
 }

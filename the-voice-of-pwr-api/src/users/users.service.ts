@@ -25,6 +25,8 @@ export class UsersService {
     if (data.email) updateData.mail = data.email;
     if (data.password) updateData.hashedPass = await bcrypt.hash(data.password, 10);
 
-    return this.db.user.update({ where: { id }, data: updateData });
+    const user = await this.db.user.update({ where: { id }, data: updateData });
+    const { hashedPass, ...result } = user;
+    return result;
   }
 }

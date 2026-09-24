@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service';
 import { CreateFieldsOfStudyDto } from './dto/create-fields_of_study.dto';
 import { UpdateFieldsOfStudyDto } from './dto/update-fields_of_study.dto';
 
 @Injectable()
 export class FieldsOfStudyService {
-  create(createFieldsOfStudyDto: CreateFieldsOfStudyDto) {
-    return 'This action adds a new fieldsOfStudy';
+  constructor(private db: DatabaseService) {}
+
+  create(dto: CreateFieldsOfStudyDto) {
+    return this.db.fieldOfStudy.create({ data: dto });
   }
 
   findAll() {
-    return `This action returns all fieldsOfStudy`;
+    return this.db.fieldOfStudy.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} fieldsOfStudy`;
+  async findOne(shortcut: string) {
+    const field = await this.db.fieldOfStudy.findUnique({ where: { shortcut } });
+    if (!field) throw new NotFoundException('Kierunek nie istnieje');
+    return field;
   }
 
-  update(id: number, updateFieldsOfStudyDto: UpdateFieldsOfStudyDto) {
-    return `This action updates a #${id} fieldsOfStudy`;
+  async update(shortcut: string, dto: UpdateFieldsOfStudyDto) {
+    await this.findOne(shortcut);
+    return this.db.fieldOfStudy.update({ where: { shortcut }, data: dto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} fieldsOfStudy`;
+  async remove(shortcut: string) {
+    await this.findOne(shortcut);
+    return this.db.fieldOfStudy.delete({ where: { shortcut } });
   }
 }

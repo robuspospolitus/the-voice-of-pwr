@@ -1,15 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  ForbiddenException,
+} from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { DormOpinionsService } from './dorm_opinions.service';
 import { CreateDormOpinionDto } from './dto/create-dorm_opinion.dto';
 import { UpdateDormOpinionDto } from './dto/update-dorm_opinion.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UserRole } from '../../generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('dorm-opinions')
 export class DormOpinionsController {
   constructor(private readonly dormOpinionsService: DormOpinionsService) {}
 
   @Post()
-  create(@Body() createDormOpinionDto: CreateDormOpinionDto) {
-    return this.dormOpinionsService.create(createDormOpinionDto);
+  create(@Body() dto: CreateDormOpinionDto, @Req() req) {
+    return this.dormOpinionsService.create(dto, req.user.id);
   }
 
   @Get()
@@ -23,12 +39,20 @@ export class DormOpinionsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDormOpinionDto: UpdateDormOpinionDto) {
-    return this.dormOpinionsService.update(+id, updateDormOpinionDto);
+  async update(@Param('id') id: string, @Body() dto: UpdateDormOpinionDto, @Req() req) {
+    const opinion = await this.dormOpinionsService.findOne(+id);
+    if (opinion.userId !== req.user.id && req.user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('Możesz edytować tylko własne opinie');
+    }
+    return this.dormOpinionsService.update(+id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @Req() req) {
+    const opinion = await this.dormOpinionsService.findOne(+id);
+    if (opinion.userId !== req.user.id && req.user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('Możesz usuwać tylko własne opinie');
+    }
     return this.dormOpinionsService.remove(+id);
   }
 }

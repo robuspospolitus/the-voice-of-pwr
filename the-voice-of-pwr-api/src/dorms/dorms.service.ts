@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service';
 import { CreateDormDto } from './dto/create-dorm.dto';
 import { UpdateDormDto } from './dto/update-dorm.dto';
 
 @Injectable()
 export class DormsService {
-  create(createDormDto: CreateDormDto) {
-    return 'This action adds a new dorm';
+  constructor(private db: DatabaseService) {}
+
+  create(dto: CreateDormDto) {
+    return this.db.dorm.create({ data: dto });
   }
 
   findAll() {
-    return `This action returns all dorms`;
+    return this.db.dorm.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dorm`;
+  async findOne(shortcut: string) {
+    const dorm = await this.db.dorm.findUnique({ where: { shortcut } });
+    if (!dorm) throw new NotFoundException('Akademik nie istnieje');
+    return dorm;
   }
 
-  update(id: number, updateDormDto: UpdateDormDto) {
-    return `This action updates a #${id} dorm`;
+  async update(shortcut: string, dto: UpdateDormDto) {
+    await this.findOne(shortcut);
+    return this.db.dorm.update({ where: { shortcut }, data: dto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dorm`;
+  async remove(shortcut: string) {
+    await this.findOne(shortcut);
+    return this.db.dorm.delete({ where: { shortcut } });
   }
 }

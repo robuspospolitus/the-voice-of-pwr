@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DatabaseService } from '../database/database.service';
 import { CreateDormOpinionDto } from './dto/create-dorm_opinion.dto';
 import { UpdateDormOpinionDto } from './dto/update-dorm_opinion.dto';
 
 @Injectable()
 export class DormOpinionsService {
-  create(createDormOpinionDto: CreateDormOpinionDto) {
-    return 'This action adds a new dormOpinion';
+  constructor(private db: DatabaseService) {}
+
+  create(dto: CreateDormOpinionDto, userId: number) {
+    return this.db.dormOpinion.create({ data: { ...dto, userId } });
   }
 
   findAll() {
-    return `This action returns all dormOpinions`;
+    return this.db.dormOpinion.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dormOpinion`;
+  async findOne(id: number) {
+    const opinion = await this.db.dormOpinion.findUnique({ where: { id } });
+    if (!opinion) throw new NotFoundException('Opinia nie istnieje');
+    return opinion;
   }
 
-  update(id: number, updateDormOpinionDto: UpdateDormOpinionDto) {
-    return `This action updates a #${id} dormOpinion`;
+  async update(id: number, dto: UpdateDormOpinionDto) {
+    await this.findOne(id);
+    return this.db.dormOpinion.update({ where: { id }, data: dto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} dormOpinion`;
+  async remove(id: number) {
+    await this.findOne(id);
+    return this.db.dormOpinion.delete({ where: { id } });
   }
 }
