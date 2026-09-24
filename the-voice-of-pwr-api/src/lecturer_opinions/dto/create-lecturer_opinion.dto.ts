@@ -1,14 +1,36 @@
-import { IsInt, IsNumber, IsOptional, IsString, IsIn } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateLecturerOpinionDto {
-  @IsInt()
+  @IsInt({ message: 'User ID must be an integer' })
+  @IsNotEmpty({ message: 'User ID is required' })
+  @ApiProperty({ description: 'The ID of the associated user', example: 1 })
+  userId!: number;
+
+  @IsInt({ message: 'Lecturer ID must be an integer' })
+  @IsNotEmpty({ message: 'Lecturer ID is required' })
+  @ApiProperty({ description: 'The ID of the associated lecturer', example: 1 })
   lecturerId!: number;
 
-  @IsNumber()
-  @IsIn([2, 2.5, 3, 3.5, 4, 4.5, 5])
-  rating!: number;
+  @IsNumber({}, { message: 'Star amount must be a number' })
+  @IsNotEmpty({ message: 'Star amount is required' })
+  @ApiProperty({
+    description: 'The amount of stars of the opinion',
+    example: 5,
+  })
+  stars!: number;
 
+  @IsString({ message: 'Description must be a string' })
   @IsOptional()
-  @IsString()
+  @ApiPropertyOptional({
+    description: 'The description of the opinion post',
+    example: 'Great lecturer!',
+  })
   description?: string;
 }

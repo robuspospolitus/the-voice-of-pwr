@@ -109,44 +109,25 @@ model Dorm {
   @@map("dorms")
 }
 
-model LecturerOpinion {
+model CourseOpinion {
   id          Int     @id @default(autoincrement())
   userId      Int     @map("user_id")
-  lecturerId  Int     @map("lecturer_id")
-  rating     Float
+  courseId    Int     @map("course_id")
+  stars       Int
   description String?
-
-  user     User     @relation(fields: [userId], references: [id])
-  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
-
-  @@unique([userId, lecturerId])
-  @@map("lecturer_opinions")
 }
 
 model DormOpinion {
   id           Int     @id @default(autoincrement())
   userId       Int     @map("user_id")
   dormShortcut String  @map("dorm_shortcut")
-  rating       Float
+  stars        Int
   description  String?
-
-  user User @relation(fields: [userId], references: [id])
-  dorm Dorm @relation(fields: [dormShortcut], references: [shortcut])
-
-  @@unique([userId, dormShortcut])
-  @@map("dorm_opinions")
 }
 
 model CourseOpinion {
   id          Int     @id @default(autoincrement())
   userId      Int     @map("user_id")
   courseId    Int     @map("course_id")
-  rating     Float
+  stars       Int
   description String?
-
-  user   User   @relation(fields: [userId], references: [id])
-  course Course @relation(fields: [courseId], references: [id])
-
-  @@unique([userId, courseId])
-  @@map("course_opinions")
-}

@@ -6,53 +6,86 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
-  Req,
-  ForbiddenException,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { DormOpinionsService } from './dorm_opinions.service';
 import { CreateDormOpinionDto } from './dto/create-dorm_opinion.dto';
 import { UpdateDormOpinionDto } from './dto/update-dorm_opinion.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UserRole } from '../../generated/prisma/client';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('dorm-opinions')
 export class DormOpinionsController {
   constructor(private readonly dormOpinionsService: DormOpinionsService) {}
 
   @Post()
-  create(@Body() dto: CreateDormOpinionDto, @Req() req) {
-    return this.dormOpinionsService.create(dto, req.user.id);
+  @ApiOperation({
+    summary: 'Create a new dorm opinion',
+    description: 'Add a new opinion linked to the dorm',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The dorm opinion has been successfully created.',
+    type: CreateDormOpinionDto,
+  })
+  async create(@Body() createDormOpinionDto: CreateDormOpinionDto) {
+    return this.dormOpinionsService.create(createDormOpinionDto);
   }
 
   @Get()
-  findAll() {
+  @ApiOperation({
+    summary: 'Retrieve a list of dorm opinions',
+    description: 'Retrieves a list of dorm opinions from the database.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'A list of dorm opinions has been successfully retrieved.',
+    type: [CreateDormOpinionDto],
+  })
+  async findAll() {
     return this.dormOpinionsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  @ApiOperation({
+    summary: 'Retrieve a dorm opinion by ID',
+    description: 'Retrieves a dorm opinion by their unique ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The dorm opinion has been successfully retrieved.',
+    type: CreateDormOpinionDto,
+  })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.dormOpinionsService.findOne(+id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateDormOpinionDto, @Req() req) {
-    const opinion = await this.dormOpinionsService.findOne(+id);
-    if (opinion.userId !== req.user.id && req.user.role !== UserRole.ADMIN) {
-      throw new ForbiddenException('Możesz edytować tylko własne opinie');
-    }
-    return this.dormOpinionsService.update(+id, dto);
+  @ApiOperation({
+    summary: 'Update a dorm opinion by ID',
+    description: 'Updates a dorm opinion by their unique ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The dorm opinion has been successfully updated.',
+    type: UpdateDormOpinionDto,
+  })
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDormOpinionDto: UpdateDormOpinionDto,
+  ) {
+    return this.dormOpinionsService.update(+id, updateDormOpinionDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req) {
-    const opinion = await this.dormOpinionsService.findOne(+id);
-    if (opinion.userId !== req.user.id && req.user.role !== UserRole.ADMIN) {
-      throw new ForbiddenException('Możesz usuwać tylko własne opinie');
-    }
+  @ApiOperation({
+    summary: 'Delete a dorm opinion by ID',
+    description: 'Deletes a dorm opinion by their unique ID.',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'The dorm opinion has been successfully deleted.',
+  })
+  async remove(@Param('id', ParseIntPipe) id: number) {
     return this.dormOpinionsService.remove(+id);
   }
 }

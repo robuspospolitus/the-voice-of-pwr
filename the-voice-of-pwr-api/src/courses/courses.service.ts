@@ -1,33 +1,76 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { Course } from 'generated/prisma/client';
 
 @Injectable()
 export class CoursesService {
-  constructor(private db: DatabaseService) {}
+  constructor(private databaseService: DatabaseService) {}
 
-  create(dto: CreateCourseDto) {
-    return this.db.course.create({ data: dto });
+  async create(createCourseDto: CreateCourseDto): Promise<Course> {
+    const fieldOfStudy = await this.databaseService.fieldOfStudy.findUnique({
+      where: { shortcut: createCourseDto.fieldOfStudyShortcut },
+    });
+
+    if (!fieldOfStudy) {
+      throw new NotFoundException(
+        `Field of study with shortcut ${createCourseDto.fieldOfStudyShortcut} not found`,
+      );
+    }
+
+    if (createCourseDto.coordinatorId) {
+      const coordinator = await this.databaseService.lecturer.findUnique({
+        where: { id: createCourseDto.coordinatorId },
+      });
+      if (!coordinator) {
+        throw new NotFoundException(
+          `Coordinator (Lecturer) with ID ${createCourseDto.coordinatorId} not found`,
+        );
+      }
+    }
+
+    return this.databaseService.course.create({
+      data: {
+        fullName: createCourseDto.fullName,
+        fieldOfStudyShortcut: createCourseDto.fieldOfStudyShortcut,
+        coordinatorId: createCourseDto.coordinatorId,
+        semester: createCourseDto.semester,
+      },
+    });
   }
 
-  findAll() {
-    return this.db.course.findMany();
+  async findAll(): Promise<Course[]> {
+    return this.databaseService.course.findMany();
   }
 
-  async findOne(id: number) {
-    const course = await this.db.course.findUnique({ where: { id } });
-    if (!course) throw new NotFoundException('Przedmiot nie istnieje');
+  async findOne(id: number): Promise<Course> {
+    const course = await this.databaseService.course.findUnique({
+      where: { id },
+    });
+    if (!course) {
+      throw new NotFoundException(`Course with id ${id} not found`);
+    }
     return course;
   }
 
-  async update(id: number, dto: UpdateCourseDto) {
+  async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     await this.findOne(id);
-    return this.db.course.update({ where: { id }, data: dto });
+    return this.databaseService.course.update({
+      where: { id },
+      data: {
+        fullName: updateCourseDto.fullName,
+        fieldOfStudyShortcut: updateCourseDto.fieldOfStudyShortcut,
+        coordinatorId: updateCourseDto.coordinatorId,
+        semester: updateCourseDto.semester,
+      },
+    });
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<Course> {
     await this.findOne(id);
-    return this.db.course.delete({ where: { id } });
+    return this.databaseService.course.delete({
+      where: { id },
+    });
   }
 }
