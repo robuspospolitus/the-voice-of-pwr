@@ -4,7 +4,7 @@ import { Card, CardTitle } from "./ui/card";
 import { MoveUpRightIcon } from "lucide-react";
 import { lecturersMock } from "@/data/lecturers";
 
-function opinionLabel(count: number) {
+export function opinionLabel(count: number) {
   if (count === 1) return "opinia";
   const mod10 = count % 10;
   const mod100 = count % 100;
@@ -14,15 +14,15 @@ function opinionLabel(count: number) {
   return "opinii";
 }
 
-function averageGrade(lecturer: LecturerDetails) {
+export function averageGrade(lecturer: LecturerDetails) {
   const grades = lecturer.opinions?.map((opinion) => opinion.grade) ?? [];
   if (grades.length === 0) return null;
   return grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
 }
-function averageGradeString(average: number) {
+export function gradeString(average: number) {
   return average.toFixed(1).replace(".", ",");
 }
-function gradeColor(avrage: number) {
+export function gradeColor(avrage: number) {
   if (avrage < 3) return "bg-red-600";
   if (avrage < 4.5) return "bg-yellow-600";
   return "bg-green-600";
@@ -36,7 +36,7 @@ export default function LecturerPreview({
   const faculty = lecturer.faculties?.[0]?.faculty;
 
   const averageValue = averageGrade(lecturer) ?? 0;
-  const averageString = averageGradeString(averageValue) ?? "";
+  const averageString = gradeString(averageValue) ?? "";
   return (
     <Link
       href={`/lecturers/${lecturer.id}`}
@@ -65,9 +65,9 @@ export default function LecturerPreview({
           </div>
           <div className="text-right flex  flex-col justify-center items-center text-white space-y-2">
             <p
-              className={`text-xl font-semibold tabular-nums tracking-tight  p-1.5 rounded-xl  ${averageValue === null ? "text-prim" : gradeColor(averageValue)}`}
+              className={`text-xl font-semibold tabular-nums tracking-tight  p-2 rounded-xl  ${averageValue === null ? "text-prim" : gradeColor(averageValue)}`}
             >
-              {averageValue === null ? "-" : averageGradeString(averageValue)}
+              {averageValue === null ? "-" : gradeString(averageValue)}
             </p>
             <p className="text-xs text-muted-foreground">
               {lecturer.opinions?.length} {opinionLabel(opinionsCount)}

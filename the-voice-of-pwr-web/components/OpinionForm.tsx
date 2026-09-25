@@ -67,7 +67,7 @@ export default function OpinionForm({ onSuccess }: OpinionFormProps) {
   const description = watch("description");
   const isTextareaFull: boolean = description.length === 500;
   return (
-    <main className="w-full max-w-3xl space-y-4">
+    <main className="w-full max-w-5xl space-y-4">
       <FormsHeader
         title="Stworz opinię"
         description="Dodaj swoją opinię i podziel się z nią z innymi studentami"

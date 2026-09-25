@@ -12,6 +12,7 @@ export type LecturerOpinion = {
   title: string;
   description: string | null;
   user?: { name: string };
+  date: string;
 };
 
 export type LecturerDetails = Lecturer & {
