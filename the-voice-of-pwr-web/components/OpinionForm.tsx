@@ -12,7 +12,7 @@ import { Textarea } from "./ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { opinionSchema, opinionFormValues } from "@/lib/schema/opinionSchema";
 import FormsHeader from "./layout/FormsHeader";
-import BackLink from "./layout/BackLink";
+import type { LecturerOpinion } from "@/lib/types/lecturer";
 
 interface InputField {
   label: string;
@@ -43,10 +43,16 @@ const inputFields: InputField[] = [
 ];
 
 interface OpinionFormProps {
+  lecturerId: string;
+  onAdd: (opinion: LecturerOpinion) => void;
   onSuccess?: () => void;
 }
 
-export default function OpinionForm({ onSuccess }: OpinionFormProps) {
+export default function OpinionForm({
+  onSuccess,
+  lecturerId,
+  onAdd,
+}: OpinionFormProps) {
   const {
     watch,
     register,
@@ -58,8 +64,17 @@ export default function OpinionForm({ onSuccess }: OpinionFormProps) {
     defaultValues: { title: "", grade: "", description: "" },
   });
 
-  const onSubmit = (values: opinionFormValues) => {
-    console.log(new Date().toLocaleDateString("pl-PL"));
+  const onSubmit = async (values: opinionFormValues) => {
+    onAdd({
+      id: crypto.randomUUID(),
+      userId: 0,
+      lecturerId,
+      grade: Number(values.grade),
+      title: values.title,
+      description: values.description,
+      user: { name: "" },
+      date: new Date().toISOString().slice(0, 10),
+    });
     reset();
     onSuccess?.();
   };
@@ -103,7 +118,7 @@ export default function OpinionForm({ onSuccess }: OpinionFormProps) {
                 {el.multiline ? (
                   <div className="">
                     <Textarea
-                      maxLength={600}
+                      maxLength={500}
                       variant="opinionForm"
                       id={el.name}
                       rows={6}

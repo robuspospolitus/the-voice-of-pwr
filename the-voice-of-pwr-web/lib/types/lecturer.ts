@@ -7,7 +7,7 @@ export type Lecturer = {
 export type LecturerOpinion = {
   id: string;
   userId: number;
-  lecturerId: number;
+  lecturerId: string;
   grade: number;
   title: string;
   description: string | null;

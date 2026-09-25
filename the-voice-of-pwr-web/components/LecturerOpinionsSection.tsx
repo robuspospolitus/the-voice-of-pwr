@@ -5,7 +5,7 @@ import BackLink from "@/components/layout/BackLink";
 import LecturerHeader from "@/components/layout/LecturerHeader";
 import OpinionView from "@/components/OpinionView";
 import OpinionForm from "@/components/OpinionForm";
-
+import { LecturerOpinion } from "@/lib/types/lecturer";
 import { BookPlus, Scroll } from "lucide-react";
 export default function LecturerOpinionsSection({
   lecturer,
@@ -13,6 +13,9 @@ export default function LecturerOpinionsSection({
   lecturer: LecturerDetails;
 }) {
   const [isAddOpinionForm, setAddOpinionForm] = useState(false);
+  const [opinions, setOpinions] = useState<LecturerOpinion[]>(
+    lecturer.opinions ?? [],
+  );
 
   return (
     <>
@@ -30,12 +33,16 @@ export default function LecturerOpinionsSection({
       </div>
 
       {isAddOpinionForm ? (
-        <OpinionForm onSuccess={() => setAddOpinionForm(false)} />
+        <OpinionForm
+          lecturerId={lecturer.id}
+          onAdd={(opinion) => setOpinions((prev) => [opinion, ...prev])}
+          onSuccess={() => setAddOpinionForm(false)}
+        />
       ) : (
         <>
-          <LecturerHeader lecturer={lecturer} />
-          <section className="space-y-4">
-            {lecturer.opinions?.map((opinion) => (
+          <LecturerHeader lecturer={{ ...lecturer, opinions }} />
+          <section className="space-y-6 my-6">
+            {opinions.map((opinion) => (
               <OpinionView key={opinion.id} opinion={opinion} />
             ))}
           </section>

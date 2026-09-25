@@ -11,7 +11,9 @@ export default function Lecturers() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-4 p-4">
-      <BackLink title="Wróć do Strony głównej" href="/" />
+      <div className="w-full flex flex-row justify-between">
+        <BackLink title="Wróć do Strony głównej" href="/" />
+      </div>
       <FormsHeader
         title="Wykładowcy"
         description="Przeglądaj wykładowców i ich opinie"

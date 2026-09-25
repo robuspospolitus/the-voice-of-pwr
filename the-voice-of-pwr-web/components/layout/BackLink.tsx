@@ -13,9 +13,9 @@ export default function BackLink({ href, title, onClick }: BackLinkProps) {
     <Link
       href={href}
       onClick={onClick}
-      className="inline-flex items-center text-sm font-medium text-zinc-600 transition duration-200 group-hover:-translate-y-0.5"
+      className="group inline-flex items-center text-sm font-medium text-zinc-600 transition duration-200 hover:-translate-y-0.5"
     >
-      <ArrowLeft size="16" className="mr-2" />
+      <ArrowLeft size="16" className="mr-2  " />
       {title}
     </Link>
   );

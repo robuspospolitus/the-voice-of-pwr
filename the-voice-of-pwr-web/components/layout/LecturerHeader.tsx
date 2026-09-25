@@ -29,14 +29,22 @@ export default function LecturerHeader({
           </p>
         </div>
       </div>
-
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base space-x-2">
-        <span>{lecturer.faculties?.[0]?.faculty.shortcut}</span>
-        <span>{lecturer.faculties?.[0]?.faculty.fullName}</span>
-      </p>
-      {lecturer.classes?.map((item) => (
-        <p key={item.course.id}>{item.course.fullName}</p>
-      ))}
+      <div className="space-y-1">
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base space-x-2">
+          <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs font-medium text-prim">
+            {lecturer.faculties?.[0]?.faculty.shortcut}
+          </span>
+          <span>{lecturer.faculties?.[0]?.faculty.fullName}</span>
+        </p>
+        {lecturer.classes?.map((item) => (
+          <span
+            className="shrink-0 rounded-full bg-white/90 px-2 py-0.5 text-xs font-medium text-prim"
+            key={item.course.id}
+          >
+            {item.course.fullName}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
