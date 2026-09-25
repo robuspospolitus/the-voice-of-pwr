@@ -7,12 +7,19 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Req,
+  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { DormOpinionsService } from './dorm_opinions.service';
 import { CreateDormOpinionDto } from './dto/create-dorm_opinion.dto';
 import { UpdateDormOpinionDto } from './dto/update-dorm_opinion.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UserRole } from 'generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('dorm-opinions')
 export class DormOpinionsController {
   constructor(private readonly dormOpinionsService: DormOpinionsService) {}
@@ -27,8 +34,11 @@ export class DormOpinionsController {
     description: 'The dorm opinion has been successfully created.',
     type: CreateDormOpinionDto,
   })
-  async create(@Body() createDormOpinionDto: CreateDormOpinionDto) {
-    return this.dormOpinionsService.create(createDormOpinionDto);
+  async create(
+    @Body() createDormOpinionDto: CreateDormOpinionDto,
+    @Req() req,
+  ) {
+    return this.dormOpinionsService.create(createDormOpinionDto, req.user.id);
   }
 
   @Get()
@@ -72,7 +82,12 @@ export class DormOpinionsController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDormOpinionDto: UpdateDormOpinionDto,
+    @Req() req,
   ) {
+    const opinion = await this.dormOpinionsService.findOne(id);
+    if (req.user.role !== UserRole.ADMIN && opinion.userId !== req.user.id) {
+      throw new ForbiddenException('You can only edit your own review.');
+    }
     return this.dormOpinionsService.update(+id, updateDormOpinionDto);
   }
 
@@ -85,7 +100,11 @@ export class DormOpinionsController {
     status: 204,
     description: 'The dorm opinion has been successfully deleted.',
   })
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    const opinion = await this.dormOpinionsService.findOne(id);
+    if (req.user.role !== UserRole.ADMIN && opinion.userId !== req.user.id) {
+      throw new ForbiddenException('You can only remove your own review.');
+    }
     return this.dormOpinionsService.remove(+id);
   }
 }

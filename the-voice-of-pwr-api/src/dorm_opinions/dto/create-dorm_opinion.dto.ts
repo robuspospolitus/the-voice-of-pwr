@@ -8,10 +8,6 @@ import {
 } from 'class-validator';
 
 export class CreateDormOpinionDto {
-  @IsInt({ message: 'User ID must be an integer' })
-  @IsNotEmpty({ message: 'User ID is required' })
-  @ApiProperty({ description: 'The ID of the associated user', example: 1 })
-  userId!: number;
 
   @IsString({ message: 'Dorm shortcut must be a string' })
   @IsNotEmpty({ message: 'Dorm shortcut is required' })

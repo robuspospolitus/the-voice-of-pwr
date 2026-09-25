@@ -9,11 +9,7 @@ import {
 } from 'class-validator';
 
 export class CreateCourseOpinionDto {
-  @IsInt({ message: 'User ID must be an integer' })
-  @IsNotEmpty({ message: 'User ID is required' })
-  @ApiProperty({ description: 'The ID of the associated user', example: 1 })
-  userId!: number;
-
+ 
   @IsInt({ message: 'Course ID must be an integer' })
   @IsNotEmpty({ message: 'Course ID is required' })
   @ApiProperty({
