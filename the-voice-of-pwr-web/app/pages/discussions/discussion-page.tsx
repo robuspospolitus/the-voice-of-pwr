@@ -102,10 +102,13 @@ export default function ThreadDetailPage() {
                     {thread.author}
                   </span>
 
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#263A99]/10 text-[#263A99]">
+                  <Badge
+                    variant="secondary"
+                    className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
+                  >
                     <ShieldCheck className="w-3 h-3 mr-1" />
                     {thread.role}
-                  </span>
+                  </Badge>
                 </div>
 
                 <div className="flex items-center text-xs text-zinc-500 mt-0.5">
@@ -117,7 +120,7 @@ export default function ThreadDetailPage() {
 
             <Badge
               variant="secondary"
-              className="bg-[#E6E5F0] text-[#263A99] font-medium border-none"
+              className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
             >
               {thread.category}
             </Badge>
@@ -129,12 +132,13 @@ export default function ThreadDetailPage() {
 
           <div className="flex flex-wrap gap-2 mb-6">
             {thread.tags.map((tag) => (
-              <span
+              <Badge
                 key={tag}
-                className="text-xs font-medium bg-zinc-100 text-zinc-600 px-2.5 py-1 rounded-md"
+                variant="secondary"
+                className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
               >
                 #{tag}
-              </span>
+              </Badge>
             ))}
           </div>
 
@@ -243,9 +247,12 @@ export default function ThreadDetailPage() {
                             {comment.author}
                           </span>
 
-                          <span className="text-[10px] bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded">
+                          <Badge
+                            variant="secondary"
+                            className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
+                          >
                             {comment.role}
-                          </span>
+                          </Badge>
                         </div>
 
                         <span className="text-xs text-zinc-400">

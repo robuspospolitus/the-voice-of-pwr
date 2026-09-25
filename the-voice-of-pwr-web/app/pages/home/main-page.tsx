@@ -13,7 +13,13 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CATEGORIES, HOT_TOPICS } from "./categories";
 import NavBar from "@/components/navbar/navbar";
@@ -25,18 +31,23 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#fcf9ff] text-zinc-900 font-sans selection:bg-[#97B4DE]/40">
       <NavBar />
+
       <main className="mx-auto max-w-6xl px-4 pt-10 pb-16 sm:px-6 space-y-12">
         <section className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-              Studenci Politechniki Wrocławskiej    
+              Studenci Politechniki Wrocławskiej
             </h1>
+
             <p className="text-base text-zinc-600 leading-relaxed">
-              Notatki, opinie, projekty i studenckie forum. Dołącz do społeczności politechnicznej i bądź na bieżąco.
+              Notatki, opinie, projekty i studenckie forum. Dołącz do
+              społeczności politechnicznej i bądź na bieżąco.
             </p>
           </div>
+
           <div className="relative w-full md:w-80 shrink-0">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#263A99]/60" />
+
             <Input
               placeholder="Szukaj wątków lub przedmiotów..."
               value={searchQuery}
@@ -52,6 +63,7 @@ export default function HomePage() {
               <h2 className="text-lg font-semibold text-zinc-900">
                 Najnowsze wpisy
               </h2>
+
               <Tabs
                 defaultValue="hot"
                 value={activeTab}
@@ -64,6 +76,7 @@ export default function HomePage() {
                   >
                     Popularne
                   </TabsTrigger>
+
                   <TabsTrigger
                     value="new"
                     className="text-xs font-medium rounded-sm data-[state=active]:bg-[#263A99] data-[state=active]:text-white"
@@ -81,10 +94,11 @@ export default function HomePage() {
                   href={`/discussions/${topic.id}`}
                   className="block group"
                 >
-                  <div
-                    className="bg-white border border-[#263A99]/10 p-4 rounded-lg flex gap-4 transition-all hover:border-[#97B4DE] shadow-sm"
-                  >
-                    <div className="flex flex-col items-center gap-1 shrink-0" onClick={(e) => e.preventDefault()}>
+                  <div className="bg-white border border-[#263A99]/10 p-4 rounded-lg flex gap-4 transition-all hover:border-[#97B4DE] shadow-sm">
+                    <div
+                      className="flex flex-col items-center gap-1 shrink-0"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       <Button
                         variant="ghost"
                         size="icon"
@@ -92,9 +106,11 @@ export default function HomePage() {
                       >
                         <ArrowUp className="w-4 h-4" />
                       </Button>
+
                       <span className="text-sm font-medium text-[#263A99]">
                         {topic.upvotes}
                       </span>
+
                       <Button
                         variant="ghost"
                         size="icon"
@@ -107,19 +123,33 @@ export default function HomePage() {
                     <div className="flex-1 min-w-0 py-1">
                       <div className="flex flex-wrap items-center gap-2 text-xs mb-2">
                         {topic.isPinned && (
-                          <span className="flex items-center gap-1 text-[#263A99] font-semibold bg-[#97B4DE]/20 px-2 py-0.5 rounded-sm">
-                            <Pin className="w-3 h-3" /> Przypięty
-                          </span>
+                          <Badge
+                            variant="secondary"
+                            className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
+                          >
+                            <Pin className="mr-1 h-3 w-3" />
+                            Przypięty
+                          </Badge>
                         )}
-                        <span className="text-zinc-600 hover:text-[#263A99] transition-colors font-medium">
+
+                        <Badge
+                          variant="secondary"
+                          className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
+                        >
                           {topic.category}
-                        </span>
+                        </Badge>
+
                         <span className="text-[#97B4DE]">•</span>
+
                         <span className="text-zinc-500">
                           przez {topic.author.name}
                         </span>
+
                         <span className="text-[#97B4DE]">•</span>
-                        <span className="text-zinc-500">{topic.createdAt}</span>
+
+                        <span className="text-zinc-500">
+                          {topic.createdAt}
+                        </span>
                       </div>
 
                       <h3 className="text-base font-semibold text-zinc-900 group-hover:text-[#263A99] leading-tight mb-3 transition-colors">
@@ -128,12 +158,13 @@ export default function HomePage() {
 
                       <div className="flex flex-wrap gap-2 mb-3">
                         {topic.tags.map((tag) => (
-                          <span
+                          <Badge
                             key={tag}
-                            className="text-[11px] font-medium text-[#263A99] bg-[#97B4DE]/20 px-2 py-0.5 rounded-sm"
+                            variant="secondary"
+                            className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
                           >
                             {tag}
-                          </span>
+                          </Badge>
                         ))}
                       </div>
 
@@ -166,25 +197,30 @@ export default function HomePage() {
                   O forum
                 </CardTitle>
               </CardHeader>
+
               <CardContent className="text-sm text-zinc-600 space-y-4">
                 <p>
                   Oficjalna przestrzeń do wymiany wiedzy, notatek i opinii dla
                   studentów uczelni technicznych i uniwersytetów we Wrocławiu.
                 </p>
+
                 <div className="flex flex-col gap-2 pt-2 border-t border-[#263A99]/10">
                   <div className="flex justify-between items-center">
                     <span className="text-zinc-500">Zarejestrowanych</span>
-                    <span className="font-medium text-[#263A99]">12,402</span>
+                    <span className="font-medium text-[#263A99]">
+                      12,402
+                    </span>
                   </div>
+
                   <div className="flex justify-between items-center">
                     <span className="text-zinc-500">Aktywnych dzisiaj</span>
                     <span className="font-medium text-[#263A99]">842</span>
                   </div>
                 </div>
+
                 <Link
-                href="/discussions/create-thread"
-  
-                className="mt-2 inline-flex h-9 w-full items-center justify-center rounded-md bg-[#263A99] px-4 text-sm font-medium text-white shadow-none transition-colors hover:bg-[#263A99]/90"
+                  href="/discussions/create-thread"
+                  className="mt-2 inline-flex h-9 w-full items-center justify-center rounded-md bg-[#263A99] px-4 text-sm font-medium text-white shadow-none transition-colors hover:bg-[#263A99]/90"
                 >
                   Utwórz wątek
                 </Link>
@@ -200,6 +236,7 @@ export default function HomePage() {
                   Główne kategorie
                 </CardTitle>
               </CardHeader>
+
               <CardContent className="space-y-1 p-2 pt-0">
                 {CATEGORIES.map((cat) => (
                   <div
@@ -210,10 +247,12 @@ export default function HomePage() {
                       <span className="text-sm font-medium text-zinc-700 group-hover:text-[#263A99] transition-colors">
                         {cat.name}
                       </span>
+
                       <span className="text-xs text-zinc-400 group-hover:text-[#263A99]/70 transition-colors">
                         {cat.topicsCount} wątków
                       </span>
                     </div>
+
                     <ChevronRight className="w-4 h-4 text-[#97B4DE] group-hover:text-[#263A99] transition-colors" />
                   </div>
                 ))}

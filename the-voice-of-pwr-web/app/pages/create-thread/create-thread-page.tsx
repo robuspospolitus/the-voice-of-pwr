@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { z } from "zod";
 
 import NavBar from "@/components/navbar/navbar";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,33 @@ const CATEGORIES = [
   "Prowadzący",
 ];
 
+const TITLE_LIMIT = 120;
+const CONTENT_LIMIT = 1200;
+
+const threadSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(8, "Tytuł musi mieć minimum 8 znaków.")
+    .max(TITLE_LIMIT, `Tytuł może mieć maksymalnie ${TITLE_LIMIT} znaków.`),
+
+  category: z
+    .string()
+    .trim()
+    .min(1, "Wybierz kategorię."),
+
+  content: z
+    .string()
+    .trim()
+    .min(30, "Treść musi mieć minimum 30 znaków.")
+    .max(
+      CONTENT_LIMIT,
+      `Treść może mieć maksymalnie ${CONTENT_LIMIT} znaków.`,
+    ),
+
+  tags: z.string(),
+});
+
 export default function CreateThreadPage() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
@@ -32,13 +60,12 @@ export default function CreateThreadPage() {
   const [tags, setTags] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const titleLimit = 120;
-  const contentLimit = 1200;
-
-  const isFormValid =
-    title.trim().length >= 8 &&
-    content.trim().length >= 30 &&
-    Boolean(category);
+  const isFormValid = threadSchema.safeParse({
+    title,
+    category,
+    content,
+    tags,
+  }).success;
 
   const parsedTags = tags
     .split(",")
@@ -49,9 +76,21 @@ export default function CreateThreadPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isFormValid) return;
+    const formData = new FormData(e.currentTarget);
 
-    // podpiac pod baze potem 
+    const result = threadSchema.safeParse({
+      title: formData.get("title"),
+      category: formData.get("category"),
+      content: formData.get("content"),
+      tags: formData.get("tags"),
+    });
+
+    if (!result.success) {
+      console.error(result.error.flatten());
+      return;
+    }
+
+    // podpiac pod baze potem
     setIsSubmitted(true);
   };
 
@@ -70,7 +109,6 @@ export default function CreateThreadPage() {
 
         <section className="mb-8 overflow-hidden rounded-2xl border border-[#263A99]/10 bg-white shadow-sm">
           <div className="rounded-t-2xl bg-[#263A99] px-6 py-7 text-white sm:px-8">
-          
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
               Utwórz wątek
             </h1>
@@ -90,11 +128,6 @@ export default function CreateThreadPage() {
             <h2 className="text-2xl font-bold text-zinc-900">
               Wątek został utworzony
             </h2>
-
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-600">
-              To na razie widok frontendowy. Zapis do bazy zostanie dodany po
-              podpięciu API.
-            </p>
 
             <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
               <Button
@@ -140,21 +173,22 @@ export default function CreateThreadPage() {
                       </label>
 
                       <span className="text-xs text-zinc-400">
-                        {title.length}/{titleLimit}
+                        {title.length}/{TITLE_LIMIT}
                       </span>
                     </div>
 
                     <Input
                       id="title"
+                      name="title"
                       value={title}
-                      maxLength={titleLimit}
+                      maxLength={TITLE_LIMIT}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Np. Materiały do kolokwium z Analizy 2"
                       className="h-11 border-zinc-200 bg-white text-sm focus-visible:ring-[#263A99]"
                     />
 
                     <p className="mt-2 text-xs text-zinc-500">
-                      Minimum 8 znaków.
+                      Minimum 8 znaków, maksymalnie {TITLE_LIMIT}.
                     </p>
                   </div>
 
@@ -168,6 +202,7 @@ export default function CreateThreadPage() {
 
                     <select
                       id="category"
+                      name="category"
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       className="h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none transition-colors focus:border-[#263A99] focus:ring-2 focus:ring-[#263A99]/20"
@@ -190,22 +225,23 @@ export default function CreateThreadPage() {
                       </label>
 
                       <span className="text-xs text-zinc-400">
-                        {content.length}/{contentLimit}
+                        {content.length}/{CONTENT_LIMIT}
                       </span>
                     </div>
 
                     <textarea
                       id="content"
+                      name="content"
                       value={content}
-                      maxLength={contentLimit}
+                      maxLength={CONTENT_LIMIT}
                       onChange={(e) => setContent(e.target.value)}
                       placeholder="Napisz, o co chcesz zapytać albo czym chcesz się podzielić."
                       className="min-h-[180px] w-full resize-none rounded-md border border-zinc-200 bg-white px-3 py-3 text-sm leading-relaxed text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#263A99] focus:ring-2 focus:ring-[#263A99]/20"
                     />
 
                     <p className="mt-2 text-xs text-zinc-500">
-                      Minimum 30 znaków. Dodaj trochę kontekstu, żeby inni
-                      wiedzieli, o co chodzi.
+                      Minimum 30 znaków, maksymalnie {CONTENT_LIMIT}. Dodaj
+                      trochę kontekstu, żeby inni wiedzieli, o co chodzi.
                     </p>
                   </div>
 
@@ -220,6 +256,7 @@ export default function CreateThreadPage() {
 
                     <Input
                       id="tags"
+                      name="tags"
                       value={tags}
                       onChange={(e) => setTags(e.target.value)}
                       placeholder="Analiza, kolokwium, notatki"
@@ -233,12 +270,13 @@ export default function CreateThreadPage() {
                     {parsedTags.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {parsedTags.map((tag) => (
-                          <span
+                          <Badge
                             key={tag}
-                            className="rounded-md bg-[#97B4DE]/20 px-2.5 py-1 text-xs font-medium text-[#263A99]"
+                            variant="secondary"
+                            className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
                           >
                             #{tag}
-                          </span>
+                          </Badge>
                         ))}
                       </div>
                     )}
@@ -269,9 +307,9 @@ export default function CreateThreadPage() {
                 </h3>
 
                 <ul className="mt-4 space-y-2 text-sm text-zinc-600">
-                  <li> Nadaj konkretny tytuł.</li>
-                  <li> Wybierz pasującą kategorię.</li>
-                  <li> Dodaj tagi, jeśli temat ich wymaga.</li>
+                  <li>Nadaj konkretny tytuł.</li>
+                  <li>Wybierz pasującą kategorię.</li>
+                  <li>Dodaj tagi, jeśli temat ich wymaga.</li>
                 </ul>
               </div>
 
@@ -286,9 +324,12 @@ export default function CreateThreadPage() {
 
                 <div className="mt-4 rounded-xl border border-zinc-100 bg-[#F8F9FC] p-4">
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
-                    <span className="rounded-sm bg-[#97B4DE]/20 px-2 py-0.5 font-semibold text-[#263A99]">
+                    <Badge
+                      variant="secondary"
+                      className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
+                    >
                       {category}
-                    </span>
+                    </Badge>
 
                     <span className="text-zinc-400">•</span>
                     <span className="text-zinc-500">przez Ciebie</span>
@@ -303,16 +344,18 @@ export default function CreateThreadPage() {
                   </p>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {(parsedTags.length > 0 ? parsedTags : ["Tag", "PWr"]).map(
-                      (tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-sm bg-white px-2 py-0.5 text-[11px] font-medium text-[#263A99]"
-                        >
-                          {tag}
-                        </span>
-                      )
-                    )}
+                    {(parsedTags.length > 0
+                      ? parsedTags
+                      : ["Tag", "PWr"]
+                    ).map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
               </div>
