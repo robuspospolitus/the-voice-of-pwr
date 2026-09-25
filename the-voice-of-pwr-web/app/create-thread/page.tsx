@@ -68,12 +68,9 @@ export default function CreateThreadPage() {
           Wróć do forum
         </Link>
 
-        <section className="mb-8 rounded-2xl border border-[#263A99]/10 bg-white shadow-sm">
+        <section className="mb-8 overflow-hidden rounded-2xl border border-[#263A99]/10 bg-white shadow-sm">
           <div className="rounded-t-2xl bg-[#263A99] px-6 py-7 text-white sm:px-8">
-            <Badge className="mb-4 border-white/20 bg-white/15 text-white hover:bg-white/15">
-              Nowy wątek
-            </Badge>
-
+          
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
               Utwórz wątek
             </h1>
