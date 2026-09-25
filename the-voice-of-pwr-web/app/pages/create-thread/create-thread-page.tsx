@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { z } from "zod";
 
 import NavBar from "@/components/navbar/navbar";
+import Footer from "@/components/footer/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -34,7 +35,10 @@ const threadSchema = z.object({
     .string()
     .trim()
     .min(8, "Tytuł musi mieć minimum 8 znaków.")
-    .max(TITLE_LIMIT, `Tytuł może mieć maksymalnie ${TITLE_LIMIT} znaków.`),
+    .max(
+      TITLE_LIMIT,
+      `Tytuł może mieć maksymalnie ${TITLE_LIMIT} znaków.`,
+    ),
 
   category: z
     .string()
@@ -60,20 +64,13 @@ export default function CreateThreadPage() {
   const [tags, setTags] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const isFormValid = threadSchema.safeParse({
-    title,
-    category,
-    content,
-    tags,
-  }).success;
-
   const parsedTags = tags
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean)
     .slice(0, 5);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -181,7 +178,9 @@ export default function CreateThreadPage() {
                       id="title"
                       name="title"
                       value={title}
+                      minLength={8}
                       maxLength={TITLE_LIMIT}
+                      required
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Np. Materiały do kolokwium z Analizy 2"
                       className="h-11 border-zinc-200 bg-white text-sm focus-visible:ring-[#263A99]"
@@ -204,6 +203,7 @@ export default function CreateThreadPage() {
                       id="category"
                       name="category"
                       value={category}
+                      required
                       onChange={(e) => setCategory(e.target.value)}
                       className="h-11 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 outline-none transition-colors focus:border-[#263A99] focus:ring-2 focus:ring-[#263A99]/20"
                     >
@@ -233,7 +233,9 @@ export default function CreateThreadPage() {
                       id="content"
                       name="content"
                       value={content}
+                      minLength={30}
                       maxLength={CONTENT_LIMIT}
+                      required
                       onChange={(e) => setContent(e.target.value)}
                       placeholder="Napisz, o co chcesz zapytać albo czym chcesz się podzielić."
                       className="min-h-[180px] w-full resize-none rounded-md border border-zinc-200 bg-white px-3 py-3 text-sm leading-relaxed text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#263A99] focus:ring-2 focus:ring-[#263A99]/20"
@@ -282,15 +284,10 @@ export default function CreateThreadPage() {
                     )}
                   </div>
 
-                  <div className="flex flex-col-reverse gap-3 border-t border-zinc-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-xs text-zinc-500">
-                      Po podpięciu backendu wątek będzie zapisywany w bazie.
-                    </p>
-
+                  <div className="flex flex-col-reverse gap-3 border-t border-zinc-100 pt-6 sm:flex-row sm:items-center sm:justify-end">
                     <Button
                       type="submit"
-                      disabled={!isFormValid}
-                      className="bg-[#263A99] text-white hover:bg-[#263A99]/90 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="bg-[#263A99] text-white hover:bg-[#263A99]/90"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       Opublikuj wątek
@@ -303,23 +300,11 @@ export default function CreateThreadPage() {
             <aside className="space-y-5">
               <div className="rounded-2xl border border-[#263A99]/10 bg-white p-5 shadow-sm">
                 <h3 className="text-sm font-bold text-zinc-900">
-                  Wskazówki
-                </h3>
-
-                <ul className="mt-4 space-y-2 text-sm text-zinc-600">
-                  <li>Nadaj konkretny tytuł.</li>
-                  <li>Wybierz pasującą kategorię.</li>
-                  <li>Dodaj tagi, jeśli temat ich wymaga.</li>
-                </ul>
-              </div>
-
-              <div className="rounded-2xl border border-[#263A99]/10 bg-white p-5 shadow-sm">
-                <h3 className="text-sm font-bold text-zinc-900">
                   Podgląd
                 </h3>
 
                 <p className="mt-1 text-xs text-zinc-500">
-                  Tak mniej więcej będzie wyglądać karta wątku.
+                  Tak będzie wyglądać karta wątku.
                 </p>
 
                 <div className="mt-4 rounded-xl border border-zinc-100 bg-[#F8F9FC] p-4">
@@ -332,7 +317,10 @@ export default function CreateThreadPage() {
                     </Badge>
 
                     <span className="text-zinc-400">•</span>
-                    <span className="text-zinc-500">przez Ciebie</span>
+
+                    <span className="text-zinc-500">
+                      przez Ciebie
+                    </span>
                   </div>
 
                   <h4 className="line-clamp-2 text-sm font-bold leading-snug text-zinc-900">
@@ -359,21 +347,12 @@ export default function CreateThreadPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="rounded-2xl border border-[#263A99]/10 bg-[#263A99] p-5 text-white shadow-sm">
-                <h3 className="text-sm font-bold">
-                  GłosPWr
-                </h3>
-
-                <p className="mt-2 text-sm leading-relaxed text-white/75">
-                  Forum jest miejscem na pytania o zajęcia, notatki, projekty i
-                  życie na uczelni.
-                </p>
-              </div>
             </aside>
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   );
 }
