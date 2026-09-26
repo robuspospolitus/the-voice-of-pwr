@@ -3,14 +3,12 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { z } from "zod";
-
-import NavBar from "@/components/navbar/navbar";
-import Footer from "@/components/footer/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import SuccessfulForm from "@/components/SuccessfulForm";
 
-import { ArrowLeft, CheckCircle2, Plus, Tag } from "lucide-react";
+import { ArrowLeft, Plus, Tag } from "lucide-react";
 
 const CATEGORIES = [
   "Egzaminy i Notatki",
@@ -77,10 +75,12 @@ export default function CreateThreadPage() {
     setIsSubmitted(true);
   };
 
-  return (
-    <div className="min-h-screen bg-[#F8F9FC] text-zinc-900 font-sans">
-      <NavBar />
+  const handleCreateAnother = () => {
+    setIsSubmitted(false);
+  };
 
+  return (
+    <div className="text-zinc-900 font-sans">
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Link
           href="/"
@@ -103,31 +103,11 @@ export default function CreateThreadPage() {
         </section>
 
         {isSubmitted ? (
-          <section className="rounded-2xl border border-emerald-200 bg-white p-8 text-center shadow-sm">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-              <CheckCircle2 className="h-7 w-7" />
-            </div>
-
-            <h2 className="text-2xl font-bold text-zinc-900">
-              Wątek został utworzony
-            </h2>
-
-            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button
-                onClick={() => setIsSubmitted(false)}
-                className="bg-[#263A99] text-white hover:bg-[#263A99]/90"
-              >
-                Utwórz kolejny wątek
-              </Button>
-
-              <Link
-                href="/"
-                className="inline-flex h-9 items-center justify-center rounded-lg border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-zinc-900"
-              >
-                Wróć na stronę główną
-              </Link>
-            </div>
-          </section>
+          <SuccessfulForm
+            header="Wątek został utworzony"
+            body="Utwórz kolejny wątek"
+            successfulFunc={handleCreateAnother}
+          />
         ) : (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <section className="lg:col-span-2">
@@ -332,8 +312,6 @@ export default function CreateThreadPage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

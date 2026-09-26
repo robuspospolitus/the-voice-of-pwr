@@ -72,7 +72,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
     <Card className="w-full max-w-md mx-auto p-5 ring-0 lg:ring">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-semibold ">
-          The Voice of PWR
+          {" "}
+          {isSignUp ? "Zarejestruj się" : "Zaloguj się"}
         </CardTitle>
         <CardDescription className="text-[16px]">
           {isSignUp

@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import NavBar from "@/components/navbar/navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -75,8 +74,7 @@ export default function ThreadDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FC] text-zinc-900 font-sans">
-      <NavBar />
+    <div className="text-zinc-900 font-sans">
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
         <div className="mb-6">

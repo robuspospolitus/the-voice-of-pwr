@@ -1,6 +1,6 @@
 import { lecturersMock } from "@/data/lecturers";
 import { notFound } from "next/navigation";
-import LecturerOpinionsSection from "@/components/LecturerOpinionsSection";
+import LecturerOpinionsSection from "@/components/pages/lecturer/LecturerOpinionsSection";
 
 export default async function LecturerView({
   params,
@@ -12,7 +12,7 @@ export default async function LecturerView({
   if (!lecturer) notFound();
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-4 p-4">
+    <main className="mx-auto max-w-6xl px-4 pt-10 pb-16 sm:px-6 space-y-8">
       <LecturerOpinionsSection lecturer={lecturer} />
     </main>
   );
