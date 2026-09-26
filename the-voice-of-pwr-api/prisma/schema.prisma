@@ -1,10 +1,15 @@
 generator client {
   provider = "prisma-client"
-   output   = "../generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model User {
@@ -12,6 +17,7 @@ model User {
   name       String
   mail       String   @unique
   hashedPass String   @map("hashed_pass")
+  role       UserRole @default(USER)
 
   lecturerOpinions LecturerOpinion[]
   dormOpinions     DormOpinion[]

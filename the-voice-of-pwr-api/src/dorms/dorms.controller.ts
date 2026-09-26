@@ -6,17 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { DormsService } from './dorms.service';
 import { CreateDormDto } from './dto/create-dorm.dto';
 import { UpdateDormDto } from './dto/update-dorm.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from 'generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('dorms')
 export class DormsController {
   constructor(private readonly dormsService: DormsService) {}
 
   @Post()
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Create a new dorm',
     description: 'Add a new dorm to the database',
@@ -59,6 +67,7 @@ export class DormsController {
   }
 
   @Patch(':shortcut')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Update a dorm by shortcut',
     description: 'Updates a dorm by their unique shortcut from the database.',
@@ -76,6 +85,7 @@ export class DormsController {
   }
 
   @Delete(':shortcut')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Delete a dorm by shortcut',
     description: 'Deletes a dorm by their unique shortcut from the database.',

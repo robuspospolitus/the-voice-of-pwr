@@ -10,10 +10,11 @@ export class DormOpinionsService {
 
   async create(
     createDormOpinionDto: CreateDormOpinionDto,
+    userId: number,
   ): Promise<DormOpinion> {
     const [user, dorm] = await Promise.all([
       this.databaseService.user.findUnique({
-        where: { id: createDormOpinionDto.userId },
+        where: { id: userId },
       }),
       this.databaseService.dorm.findUnique({
         where: { shortcut: createDormOpinionDto.dormShortcut },
@@ -21,9 +22,7 @@ export class DormOpinionsService {
     ]);
 
     if (!user) {
-      throw new NotFoundException(
-        `User with ID ${createDormOpinionDto.userId} not found`,
-      );
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
     if (!dorm) {
       throw new NotFoundException(
@@ -33,7 +32,7 @@ export class DormOpinionsService {
 
     return this.databaseService.dormOpinion.create({
       data: {
-        userId: createDormOpinionDto.userId,
+        userId,
         dormShortcut: createDormOpinionDto.dormShortcut,
         stars: createDormOpinionDto.stars,
         description: createDormOpinionDto.description,
@@ -63,7 +62,6 @@ export class DormOpinionsService {
     return this.databaseService.dormOpinion.update({
       where: { id },
       data: {
-        userId: updateDormOpinionDto.userId,
         dormShortcut: updateDormOpinionDto.dormShortcut,
         stars: updateDormOpinionDto.stars,
         description: updateDormOpinionDto.description,

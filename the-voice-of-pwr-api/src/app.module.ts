@@ -13,6 +13,8 @@ import { LecturersFacultyModule } from './lecturers_faculty/lecturers_faculty.mo
 import { FacultiesModule } from './faculties/faculties.module';
 import { FieldsOfStudyModule } from './fields_of_study/fields_of_study.module';
 import { DormOpinionsModule } from './dorm_opinions/dorm_opinions.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { DormOpinionsModule } from './dorm_opinions/dorm_opinions.module';
     FacultiesModule,
     FieldsOfStudyModule,
     DormOpinionsModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
