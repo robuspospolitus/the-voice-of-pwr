@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { z } from "zod";
 
@@ -10,12 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Plus,
-  Tag,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle2, Plus, Tag } from "lucide-react";
 
 const CATEGORIES = [
   "Egzaminy i Notatki",
@@ -35,24 +30,15 @@ const threadSchema = z.object({
     .string()
     .trim()
     .min(8, "Tytuł musi mieć minimum 8 znaków.")
-    .max(
-      TITLE_LIMIT,
-      `Tytuł może mieć maksymalnie ${TITLE_LIMIT} znaków.`,
-    ),
+    .max(TITLE_LIMIT, `Tytuł może mieć maksymalnie ${TITLE_LIMIT} znaków.`),
 
-  category: z
-    .string()
-    .trim()
-    .min(1, "Wybierz kategorię."),
+  category: z.string().trim().min(1, "Wybierz kategorię."),
 
   content: z
     .string()
     .trim()
     .min(30, "Treść musi mieć minimum 30 znaków.")
-    .max(
-      CONTENT_LIMIT,
-      `Treść może mieć maksymalnie ${CONTENT_LIMIT} znaków.`,
-    ),
+    .max(CONTENT_LIMIT, `Treść może mieć maksymalnie ${CONTENT_LIMIT} znaków.`),
 
   tags: z.string(),
 });
@@ -87,7 +73,7 @@ export default function CreateThreadPage() {
       return;
     }
 
-    // podpiac pod baze potem
+    // TODO podpiac pod baze potem
     setIsSubmitted(true);
   };
 
@@ -238,7 +224,7 @@ export default function CreateThreadPage() {
                       required
                       onChange={(e) => setContent(e.target.value)}
                       placeholder="Napisz, o co chcesz zapytać albo czym chcesz się podzielić."
-                      className="min-h-[180px] w-full resize-none rounded-md border border-zinc-200 bg-white px-3 py-3 text-sm leading-relaxed text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#263A99] focus:ring-2 focus:ring-[#263A99]/20"
+                      className="min-h-45 w-full resize-none rounded-md border border-zinc-200 bg-white px-3 py-3 text-sm leading-relaxed text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#263A99] focus:ring-2 focus:ring-[#263A99]/20"
                     />
 
                     <p className="mt-2 text-xs text-zinc-500">
@@ -299,9 +285,7 @@ export default function CreateThreadPage() {
 
             <aside className="space-y-5">
               <div className="rounded-2xl border border-[#263A99]/10 bg-white p-5 shadow-sm">
-                <h3 className="text-sm font-bold text-zinc-900">
-                  Podgląd
-                </h3>
+                <h3 className="text-sm font-bold text-zinc-900">Podgląd</h3>
 
                 <p className="mt-1 text-xs text-zinc-500">
                   Tak będzie wyglądać karta wątku.
@@ -318,9 +302,7 @@ export default function CreateThreadPage() {
 
                     <span className="text-zinc-400">•</span>
 
-                    <span className="text-zinc-500">
-                      przez Ciebie
-                    </span>
+                    <span className="text-zinc-500">przez Ciebie</span>
                   </div>
 
                   <h4 className="line-clamp-2 text-sm font-bold leading-snug text-zinc-900">
@@ -332,18 +314,17 @@ export default function CreateThreadPage() {
                   </p>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {(parsedTags.length > 0
-                      ? parsedTags
-                      : ["Tag", "PWr"]
-                    ).map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
+                    {(parsedTags.length > 0 ? parsedTags : ["Tag", "PWr"]).map(
+                      (tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="border-none bg-[#E6E5F0] font-medium text-[#263A99]"
+                        >
+                          {tag}
+                        </Badge>
+                      ),
+                    )}
                   </div>
                 </div>
               </div>

@@ -14,12 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CATEGORIES, HOT_TOPICS } from "./categories";
 import NavBar from "@/components/navbar/navbar";
@@ -147,9 +142,7 @@ export default function HomePage() {
 
                         <span className="text-[#97B4DE]">•</span>
 
-                        <span className="text-zinc-500">
-                          {topic.createdAt}
-                        </span>
+                        <span className="text-zinc-500">{topic.createdAt}</span>
                       </div>
 
                       <h3 className="text-base font-semibold text-zinc-900 group-hover:text-[#263A99] leading-tight mb-3 transition-colors">
@@ -207,9 +200,7 @@ export default function HomePage() {
                 <div className="flex flex-col gap-2 pt-2 border-t border-[#263A99]/10">
                   <div className="flex justify-between items-center">
                     <span className="text-zinc-500">Zarejestrowanych</span>
-                    <span className="font-medium text-[#263A99]">
-                      12,402
-                    </span>
+                    <span className="font-medium text-[#263A99]">12,402</span>
                   </div>
 
                   <div className="flex justify-between items-center">
