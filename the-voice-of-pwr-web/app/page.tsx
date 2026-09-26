@@ -1,7 +1,6 @@
-export default function Home() {
-  return (
-    <main>
-      <div>Hello world!</div>
-    </main>
-  );
+import CreateThreadPage from "./pages/create-thread/create-thread-page";
+import Home from "./pages/home/main-page";
+
+export default function Main() {
+  return <CreateThreadPage />;
 }
