@@ -8,7 +8,7 @@ import NavBar from "@/components/navbar/navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { MOCK_THREADS, type Comment } from "./mockThreads";
+import { MOCK_THREADS, type Comment } from "../mockThreads";
 
 import {
   ArrowLeft,
