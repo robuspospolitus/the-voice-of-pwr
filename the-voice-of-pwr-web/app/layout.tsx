@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist } from "next/font/google";
-
 import "./globals.css";
 
 const geist = Geist({
@@ -14,11 +13,7 @@ export const metadata: Metadata = {
   description: "Forum studentów Politechniki Wrocławskiej",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pl" className={`${geist.variable} font-sans`}>
       <body>{children}</body>
