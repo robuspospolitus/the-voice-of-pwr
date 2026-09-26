@@ -13,25 +13,13 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-
-const loginSchema = z.object({
-  email: z.string().email("Podaj poprawny adres email"),
-  password: z.string().min(8, "Minimum 8 znaków"),
-});
-
-const registerSchema = loginSchema
-  .extend({
-    name: z.string().min(1, "Podaj nazwę użytkownika"),
-    confirmPassword: z.string().min(1, "Potwierdź hasło"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Hasła nie są identyczne",
-    path: ["confirmPassword"],
-  });
-
-type LoginFormValues = z.infer<typeof loginSchema>;
-type RegisterFormValues = z.infer<typeof registerSchema>;
-type AuthFormValues = LoginFormValues | RegisterFormValues;
+import {
+  AuthFormValues,
+  RegisterFormValues,
+  LoginFormValues,
+  registerSchema,
+  loginSchema,
+} from "@/lib/schema/authFormSchema";
 
 interface AuthFormProps {
   mode: "signin" | "signup";
@@ -78,12 +66,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
-  const onSubmit = (values: RegisterFormValues) => {
-    console.log(values);
-  };
+  const onSubmit = (values: RegisterFormValues) => console.log(values);
 
   return (
-    <Card variant="authForms">
+    <Card className="w-full max-w-md mx-auto p-5 ring-0 lg:ring">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-semibold ">
           The Voice of PWR
@@ -105,14 +91,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
             if (field.signUpOnly && !isSignUp) return null;
             return (
               <div key={field.id} className="flex flex-col">
-                <label htmlFor={field.id} className="text-sm font-medium mb-1">
+                <label htmlFor={field.id} className="text-sm font-medium ">
                   {field.label} <span className="text-red-700">*</span>
                 </label>
                 <Input
                   id={field.id}
                   type={field.type}
                   placeholder={field.placeholder}
-                  variant="authForms"
+                  className="border-0 bg-neutral-200/80 py-5"
                   {...register(field.id as keyof RegisterFormValues)}
                 />
                 {errors[field.id as keyof RegisterFormValues] && (
@@ -127,7 +113,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               </div>
             );
           })}
-          <Button type="submit" variant="forms">
+          <Button type="submit" variant="form">
             {isSignUp ? "Zarejestruj się" : "Zaloguj się"}
           </Button>
         </form>
