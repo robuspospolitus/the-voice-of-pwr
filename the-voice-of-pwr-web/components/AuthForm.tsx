@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { loginAccount, RegisterUser } from "@/lib/api/auth";
 import {
   Card,
   CardHeader,
@@ -19,6 +21,10 @@ import {
   registerSchema,
   loginSchema,
 } from "@/lib/schema/authFormSchema";
+
+function errorText(message: string | string[]) {
+  return Array.isArray(message) ? message.join(", ") : message;
+}
 
 interface AuthFormProps {
   mode: "signin" | "signup";
@@ -55,6 +61,8 @@ const formFields = [
 
 export default function AuthForm({ mode }: AuthFormProps) {
   const isSignUp = mode === "signup";
+  const router = useRouter();
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -70,7 +78,43 @@ export default function AuthForm({ mode }: AuthFormProps) {
     },
   });
 
-  const onSubmit = (values: RegisterFormValues) => console.log(values);
+  const onSubmit = async (values: RegisterFormValues) => {
+    setSubmitError(null);
+
+    const result = isSignUp
+      ? await RegisterUser({
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        })
+      : await loginAccount({
+          email: values.email,
+          password: values.password,
+        });
+
+    if (!result.ok) {
+      setSubmitError(errorText(result.message));
+      return;
+    }
+
+    const session =
+      "accessToken" in result
+        ? result
+        : await loginAccount({
+            email: values.email,
+            password: values.password,
+          });
+
+    if (!session.ok) {
+      setSubmitError(errorText(session.message));
+      return;
+    }
+
+    localStorage.setItem("accessToken", session.accessToken);
+    document.cookie = `accessToken=${encodeURIComponent(session.accessToken)}; Path=/; SameSite=Lax`;
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto p-5 ring-0 lg:ring">
@@ -84,6 +128,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
             ? "Wprowadź swoje dane, aby się zarejestrować!"
             : "Wprowadź adres email i hasło, aby się zalogować!"}
         </CardDescription>
+        {submitError && (
+          <p className="pt-3 text-sm text-red-500">{submitError}</p>
+        )}
       </CardHeader>
 
       <CardContent>

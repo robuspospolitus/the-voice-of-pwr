@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Card,
@@ -53,6 +54,8 @@ export default function OpinionForm({
   lecturerId,
   onAdd,
 }: OpinionFormProps) {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const {
     watch,
     register,
@@ -65,6 +68,7 @@ export default function OpinionForm({
   });
 
   const onSubmit = async (values: opinionFormValues) => {
+    setSubmitError(null);
     onAdd({
       id: crypto.randomUUID(),
       userId: 0,
@@ -146,6 +150,9 @@ export default function OpinionForm({
                 )}
               </div>
             ))}
+            {submitError && (
+              <p className="text-sm text-red-500">{submitError}</p>
+            )}
             <Button variant="form" type="submit">
               Zapisz opinę
             </Button>

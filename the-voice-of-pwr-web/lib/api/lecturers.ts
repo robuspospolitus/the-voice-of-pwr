@@ -1,7 +1,7 @@
 "use server";
 
 import type { LecturerDetails, LecturerOpinion } from "@/lib/types/lecturer";
-
+import { cookies } from "next/headers";
 const API_URL = process.env.API_URL ?? "http://127.0.0.1:3001";
 
 type ApiOpinion = {
@@ -56,10 +56,14 @@ async function errorMessage(res: Response) {
   } catch {}
   return `Request failed (${res.status})`;
 }
-
+async function authHeaders(): Promise<HeadersInit> {
+  const token = (await cookies()).get("accessToken")?.value;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 export async function getLecturers(): Promise<LecturerDetails[]> {
   const res = await fetch(`${API_URL}/api/v1/lecturers`, {
     cache: "no-store",
+    headers: await authHeaders(),
   });
   if (!res.ok) throw new Error(await errorMessage(res));
 
@@ -73,6 +77,7 @@ export async function getLecturer(id: string): Promise<LecturerDetails | null> {
 
   const res = await fetch(`${API_URL}/api/v1/lecturers/${numericId}`, {
     cache: "no-store",
+    headers: await authHeaders(),
   });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(await errorMessage(res));
