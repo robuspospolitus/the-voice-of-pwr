@@ -1,4 +1,4 @@
-import { lecturersMock } from "@/data/lecturers";
+import { getLecturer } from "@/lib/api/lecturers";
 import { notFound } from "next/navigation";
 import LecturerOpinionsSection from "@/components/pages/lecturer/LecturerOpinionsSection";
 
@@ -8,7 +8,7 @@ export default async function LecturerView({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const lecturer = lecturersMock.find((item) => item.id === id);
+  const lecturer = await getLecturer(id);
   if (!lecturer) notFound();
 
   return (

@@ -1,10 +1,11 @@
 import LecturerPreview from "@/components/pages/lecturer/LecturerPreview";
-import { lecturersMock } from "@/data/lecturers";
+import { getLecturers } from "@/lib/api/lecturers";
 
-export default function Lecturers() {
+export default async function Lecturers() {
+  const lecturers = await getLecturers();
   const byFaculty = Object.groupBy(
-    lecturersMock,
-    (lecturer) => lecturer.faculties?.[0].faculty.fullName ?? "brak",
+    lecturers,
+    (lecturer) => lecturer.faculties?.[0]?.faculty.fullName ?? "brak",
   );
 
   return (
