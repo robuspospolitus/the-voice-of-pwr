@@ -7,12 +7,19 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { LecturersFacultyService } from './lecturers_faculty.service';
 import { CreateLecturersFacultyDto } from './dto/create-lecturers_faculty.dto';
 import { UpdateLecturersFacultyDto } from './dto/update-lecturers_faculty.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from 'generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('lecturer-faculties')
 export class LecturersFacultyController {
   constructor(
@@ -20,6 +27,7 @@ export class LecturersFacultyController {
   ) {}
 
   @Post()
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Create a new lecturer faculty relation',
     description: 'Add a new relation between lecturer and faculty',
@@ -62,6 +70,7 @@ export class LecturersFacultyController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Update a relation by ID',
     description: 'Updates a relation by ID from the database.',
@@ -79,6 +88,7 @@ export class LecturersFacultyController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Delete a relation by ID',
     description: 'Deletes a relation by ID from the database.',

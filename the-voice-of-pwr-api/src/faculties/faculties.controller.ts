@@ -6,17 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { FacultiesService } from './faculties.service';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
 import { UpdateFacultyDto } from './dto/update-faculty.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from 'generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('faculties')
 export class FacultiesController {
   constructor(private readonly facultiesService: FacultiesService) {}
 
   @Post()
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Create a new faculty',
     description: 'Add a new faculty to the database',
@@ -60,6 +68,7 @@ export class FacultiesController {
   }
 
   @Patch(':shortcut')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Update a faculty by shortcut',
     description:
@@ -78,6 +87,7 @@ export class FacultiesController {
   }
 
   @Delete(':shortcut')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Delete a faculty by shortcut',
     description:

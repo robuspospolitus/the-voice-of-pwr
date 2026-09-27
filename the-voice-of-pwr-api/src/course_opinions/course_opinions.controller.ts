@@ -7,12 +7,19 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Req,
+  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CourseOpinionsService } from './course_opinions.service';
 import { CreateCourseOpinionDto } from './dto/create-course_opinion.dto';
 import { UpdateCourseOpinionDto } from './dto/update-course_opinion.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UserRole } from 'generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('course-opinions')
 export class CourseOpinionsController {
   constructor(private readonly courseOpinionsService: CourseOpinionsService) {}
@@ -27,8 +34,14 @@ export class CourseOpinionsController {
     description: 'The course opinion has been succesfully created.',
     type: CreateCourseOpinionDto,
   })
-  async create(@Body() createCourseOpinionDto: CreateCourseOpinionDto) {
-    return this.courseOpinionsService.create(createCourseOpinionDto);
+  async create(
+    @Body() createCourseOpinionDto: CreateCourseOpinionDto,
+    @Req() req,
+  ) {
+    return this.courseOpinionsService.create(
+      createCourseOpinionDto,
+      req.user.id,
+    );
   }
 
   @Get()
@@ -74,7 +87,12 @@ export class CourseOpinionsController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCourseOpinionDto: UpdateCourseOpinionDto,
+    @Req() req,
   ) {
+    const opinion = await this.courseOpinionsService.findOne(id);
+    if (req.user.role !== UserRole.ADMIN && opinion.userId !== req.user.id) {
+      throw new ForbiddenException('You can only edit your own review.');
+    }
     return this.courseOpinionsService.update(+id, updateCourseOpinionDto);
   }
 
@@ -88,7 +106,11 @@ export class CourseOpinionsController {
     status: 204,
     description: 'The course opinion has been successfully deleted.',
   })
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    const opinion = await this.courseOpinionsService.findOne(id);
+    if (req.user.role !== UserRole.ADMIN && opinion.userId !== req.user.id) {
+      throw new ForbiddenException('You can only remove your own review.');
+    }
     return this.courseOpinionsService.remove(+id);
   }
 }

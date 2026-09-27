@@ -1,8 +1,9 @@
 "use client";
+
 import Link from "next/link";
-import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Card,
   CardHeader,
@@ -14,9 +15,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
-  AuthFormValues,
   RegisterFormValues,
-  LoginFormValues,
   registerSchema,
   loginSchema,
 } from "@/lib/schema/authFormSchema";
@@ -63,7 +62,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
     formState: { errors },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(isSignUp ? registerSchema : (loginSchema as any)),
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   const onSubmit = (values: RegisterFormValues) => console.log(values);
@@ -72,9 +76,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
     <Card className="w-full max-w-md mx-auto p-5 ring-0 lg:ring">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-semibold ">
-          {" "}
           {isSignUp ? "Zarejestruj się" : "Zaloguj się"}
         </CardTitle>
+
         <CardDescription className="text-[16px]">
           {isSignUp
             ? "Wprowadź swoje dane, aby się zarejestrować!"
@@ -89,12 +93,16 @@ export default function AuthForm({ mode }: AuthFormProps) {
           className="space-y-4"
         >
           {formFields.map((field) => {
-            if (field.signUpOnly && !isSignUp) return null;
+            if (field.signUpOnly && !isSignUp) {
+              return null;
+            }
+
             return (
               <div key={field.id} className="flex flex-col">
                 <label htmlFor={field.id} className="text-sm font-medium ">
                   {field.label} <span className="text-red-700">*</span>
                 </label>
+
                 <Input
                   id={field.id}
                   type={field.type}
@@ -102,6 +110,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                   className="border-0 bg-neutral-200/80 py-5"
                   {...register(field.id as keyof RegisterFormValues)}
                 />
+
                 {errors[field.id as keyof RegisterFormValues] && (
                   <p className="text-sm text-red-500 mt-1">
                     *
@@ -123,6 +132,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       <CardFooter className="flex flex-col bg-white">
         <CardDescription className="pt-4">
           {isSignUp ? "Masz już konto? " : "Nie masz jeszcze konta? "}
+
           <Link
             className="text-prim hover:underline font-medium"
             href={isSignUp ? "/signin" : "/signup"}

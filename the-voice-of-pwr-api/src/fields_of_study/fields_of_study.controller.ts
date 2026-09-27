@@ -6,17 +6,25 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { FieldsOfStudyService } from './fields_of_study.service';
 import { CreateFieldOfStudyDto } from './dto/create-fields_of_study.dto';
 import { UpdateFieldOfStudyDto } from './dto/update-fields_of_study.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from 'generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('fields-of-study')
 export class FieldsOfStudyController {
   constructor(private readonly fieldsOfStudyService: FieldsOfStudyService) {}
 
   @Post()
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Create a new field of study',
     description: 'Add a new field of study to the database',
@@ -60,6 +68,7 @@ export class FieldsOfStudyController {
   }
 
   @Patch(':shortcut')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Update a field of study by shortcut',
     description:
@@ -78,6 +87,7 @@ export class FieldsOfStudyController {
   }
 
   @Delete(':shortcut')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Delete a field of study by shortcut',
     description:

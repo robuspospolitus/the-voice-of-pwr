@@ -10,13 +10,14 @@ export class CourseOpinionsService {
 
   async create(
     createCourseOpinionDto: CreateCourseOpinionDto,
+    userId: number,
   ): Promise<CourseOpinion> {
     const [course, user] = await Promise.all([
       this.databaseService.course.findUnique({
         where: { id: createCourseOpinionDto.courseId },
       }),
       this.databaseService.user.findUnique({
-        where: { id: createCourseOpinionDto.userId },
+        where: { id: userId },
       }),
     ]);
 
@@ -27,14 +28,12 @@ export class CourseOpinionsService {
     }
 
     if (!user) {
-      throw new NotFoundException(
-        `User with ID ${createCourseOpinionDto.userId} not found`,
-      );
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
     return this.databaseService.courseOpinion.create({
       data: {
-        userId: createCourseOpinionDto.userId,
+        userId,
         courseId: createCourseOpinionDto.courseId,
         stars: createCourseOpinionDto.stars,
         description: createCourseOpinionDto.description,
@@ -64,7 +63,6 @@ export class CourseOpinionsService {
     return this.databaseService.courseOpinion.update({
       where: { id },
       data: {
-        userId: updateCourseOpinionDto.userId,
         courseId: updateCourseOpinionDto.courseId,
         stars: updateCourseOpinionDto.stars,
         description: updateCourseOpinionDto.description,

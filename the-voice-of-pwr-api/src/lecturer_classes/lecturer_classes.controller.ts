@@ -7,12 +7,19 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { LecturerClassesService } from './lecturer_classes.service';
 import { CreateLecturerClassDto } from './dto/create-lecturer_class.dto';
 import { UpdateLecturerClassDto } from './dto/update-lecturer_class.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from 'generated/prisma/client';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('lecturer-classes')
 export class LecturerClassesController {
   constructor(
@@ -20,6 +27,7 @@ export class LecturerClassesController {
   ) {}
 
   @Post()
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Create a new lecturer class',
     description: 'Add a new class assignment',
@@ -62,6 +70,7 @@ export class LecturerClassesController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Update a lecturer class by ID',
     description: 'Updates an assignment by ID.',
@@ -79,6 +88,7 @@ export class LecturerClassesController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: 'Delete a lecturer class by ID',
     description: 'Deletes an assignment by ID.',

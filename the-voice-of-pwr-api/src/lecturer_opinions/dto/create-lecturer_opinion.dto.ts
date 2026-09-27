@@ -8,10 +8,6 @@ import {
 } from 'class-validator';
 
 export class CreateLecturerOpinionDto {
-  @IsInt({ message: 'User ID must be an integer' })
-  @IsNotEmpty({ message: 'User ID is required' })
-  @ApiProperty({ description: 'The ID of the associated user', example: 1 })
-  userId!: number;
 
   @IsInt({ message: 'Lecturer ID must be an integer' })
   @IsNotEmpty({ message: 'Lecturer ID is required' })
