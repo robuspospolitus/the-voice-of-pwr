@@ -94,12 +94,16 @@ export async function createLecturerOpinion(input: {
 }): Promise<
   { ok: true; opinion: LecturerOpinion } | { ok: false; message: string }
 > {
+  const headers = await authHeaders();
+  if (!("Authorization" in headers)) {
+    return { ok: false, message: "Zaloguj się, żeby dodać opinię" };
+  }
+
   const res = await fetch(`${API_URL}/api/v1/lecturer-opinions`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...headers },
     cache: "no-store",
     body: JSON.stringify({
-      userId: 1,
       lecturerId: input.lecturerId,
       stars: input.stars,
       description: input.description,

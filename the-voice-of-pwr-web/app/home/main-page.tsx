@@ -17,7 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CATEGORIES, HOT_TOPICS } from "./categories";
-import NavBar from "@/components/navbar/navbar";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState("hot");
@@ -25,8 +24,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#fcf9ff] text-zinc-900 font-sans selection:bg-[#97B4DE]/40">
-      <NavBar />
-
       <main className="mx-auto max-w-6xl px-4 pt-10 pb-16 sm:px-6 space-y-12">
         <section className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-3 max-w-2xl">

@@ -1,4 +1,4 @@
-import LecturerPreview from "@/components/pages/lecturer/LecturerPreview";
+import LecturerPreview from "@/components/LecturerPreview";
 import { getLecturers } from "@/lib/api/lecturers";
 
 export default async function Lecturers() {

@@ -1,4 +1,4 @@
-import type { StudyField } from "../types";
+import type { StudyField } from "../types.ts";
 
 export const STUDY_FIELDS: StudyField[] = [
   {

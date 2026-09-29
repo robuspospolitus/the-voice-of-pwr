@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { opinionSchema, opinionFormValues } from "@/lib/schema/opinionSchema";
 import FormsHeader from "./layout/FormsHeader";
 import type { LecturerOpinion } from "@/lib/types/lecturer";
+import { createLecturerOpinion } from "@/lib/api/lecturers";
 
 interface InputField {
   label: string;
@@ -69,16 +70,17 @@ export default function OpinionForm({
 
   const onSubmit = async (values: opinionFormValues) => {
     setSubmitError(null);
-    onAdd({
-      id: crypto.randomUUID(),
-      userId: 0,
-      lecturerId,
-      grade: Number(values.grade),
-      title: values.title,
+    const result = await createLecturerOpinion({
+      lecturerId: Number(lecturerId),
+      stars: Number(values.grade),
       description: values.description,
-      user: { name: "" },
-      date: new Date().toISOString().slice(0, 10),
+      title: values.title,
     });
+    if (!result.ok) {
+      setSubmitError(result.message);
+      return;
+    }
+    onAdd(result.opinion);
     reset();
     onSuccess?.();
   };

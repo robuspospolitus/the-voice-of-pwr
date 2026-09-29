@@ -1,6 +1,6 @@
 import { getLecturer } from "@/lib/api/lecturers";
 import { notFound } from "next/navigation";
-import LecturerOpinionsSection from "@/components/pages/lecturer/LecturerOpinionsSection";
+import LecturerOpinionsSection from "@/components/LecturerOpinionsSection";
 
 export default async function LecturerView({
   params,

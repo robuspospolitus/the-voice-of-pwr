@@ -4,10 +4,11 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import NavBar from "@/components/navbar/navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import { MOCK_THREADS, type Comment } from "./mockThreads";
+import { MOCK_THREADS, type Comment } from "../mockThreads";
 
 import {
   ArrowLeft,
@@ -74,7 +75,8 @@ export default function ThreadDetailPage() {
   };
 
   return (
-    <div className="text-zinc-900 font-sans">
+    <div className="min-h-screen bg-[#F8F9FC] text-zinc-900 font-sans">
+      <NavBar />
 
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
         <div className="mb-6">
@@ -208,7 +210,7 @@ export default function ThreadDetailPage() {
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Napisz merytoryczny komentarz jako student..."
-              className="flex min-h-[100px] w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#263A99] mb-4 resize-none"
+              className="flex min-h-25 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#263A99] mb-4 resize-none"
             />
 
             <div className="flex justify-end">
