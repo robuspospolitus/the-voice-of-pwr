@@ -10,7 +10,6 @@ import {
   GraduationCap,
 } from "lucide-react";
 
-import NavBar from "@/components/navbar/navbar";
 import Footer from "@/components/footer/footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,8 +28,6 @@ export default function StudyFieldPage() {
   if (!field) {
     return (
       <div className="min-h-screen bg-[#fcf9ff]">
-        <NavBar />
-
         <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
           <Card className="border-[#263A99]/10 bg-white p-8 text-center">
             <h1 className="text-xl font-bold">Nie znaleziono kierunku</h1>
@@ -55,8 +52,6 @@ export default function StudyFieldPage() {
 
   return (
     <div className="min-h-screen bg-[#fcf9ff] text-zinc-900">
-      <NavBar />
-
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <Link
           href="/courses"

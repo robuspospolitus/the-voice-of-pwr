@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { z } from "zod";
 
-import NavBar from "@/components/navbar/navbar";
 import Footer from "@/components/footer/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,8 +78,6 @@ export default function CreateThreadPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FC] text-zinc-900 font-sans">
-      <NavBar />
-
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Link
           href="/"

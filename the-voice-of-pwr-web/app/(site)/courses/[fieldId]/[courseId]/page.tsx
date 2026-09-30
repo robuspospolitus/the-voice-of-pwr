@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import { z } from "zod";
 import { ArrowLeft } from "lucide-react";
 
-import NavBar from "@/components/navbar/navbar";
 import Footer from "@/components/footer/footer";
 import RatingStars from "@/components/courses/rating-stars";
 
@@ -52,8 +51,6 @@ export default function CoursePage() {
   if (!course || !field) {
     return (
       <div className="min-h-screen bg-[#fcf9ff] text-zinc-900">
-        <NavBar />
-
         <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
           <Card className="border-[#263A99]/10 bg-white shadow-sm">
             <CardContent className="p-8 text-center">
@@ -120,8 +117,6 @@ export default function CoursePage() {
 
   return (
     <div className="min-h-screen bg-[#fcf9ff] text-zinc-900 font-sans">
-      <NavBar />
-
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
         <Link
           href={`/courses/${field.id}`}

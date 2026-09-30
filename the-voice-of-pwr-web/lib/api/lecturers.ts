@@ -2,6 +2,7 @@
 
 import type { LecturerDetails, LecturerOpinion } from "@/lib/types/lecturer";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 const API_URL = process.env.API_URL ?? "http://127.0.0.1:3001";
 
 type ApiOpinion = {
@@ -60,11 +61,19 @@ async function authHeaders(): Promise<HeadersInit> {
   const token = (await cookies()).get("accessToken")?.value;
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
+
+async function authorizedHeaders(): Promise<HeadersInit> {
+  const headers = await authHeaders();
+  if (!("Authorization" in headers)) redirect("/signin");
+  return headers;
+}
+
 export async function getLecturers(): Promise<LecturerDetails[]> {
   const res = await fetch(`${API_URL}/api/v1/lecturers`, {
     cache: "no-store",
-    headers: await authHeaders(),
+    headers: await authorizedHeaders(),
   });
+  if (res.status === 401) redirect("/signin");
   if (!res.ok) throw new Error(await errorMessage(res));
 
   const lecturers = (await res.json()) as ApiLecturer[];
@@ -77,8 +86,9 @@ export async function getLecturer(id: string): Promise<LecturerDetails | null> {
 
   const res = await fetch(`${API_URL}/api/v1/lecturers/${numericId}`, {
     cache: "no-store",
-    headers: await authHeaders(),
+    headers: await authorizedHeaders(),
   });
+  if (res.status === 401) redirect("/signin");
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(await errorMessage(res));
 

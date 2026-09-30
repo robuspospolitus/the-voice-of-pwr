@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, Search } from "lucide-react";
 
-import NavBar from "@/components/navbar/navbar";
 import Footer from "@/components/footer/footer";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -41,8 +40,6 @@ export default function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-[#fcf9ff] text-zinc-900 font-sans">
-      <NavBar />
-
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <section className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
