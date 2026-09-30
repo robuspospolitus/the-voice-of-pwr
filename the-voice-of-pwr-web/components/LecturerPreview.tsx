@@ -2,7 +2,6 @@ import { LecturerDetails } from "@/lib/types/lecturer";
 import Link from "next/link";
 import { Card, CardTitle } from "./ui/card";
 import { MoveUpRightIcon } from "lucide-react";
-import { lecturersMock } from "@/data/lecturers";
 
 export function opinionLabel(count: number) {
   if (count === 1) return "opinia";
