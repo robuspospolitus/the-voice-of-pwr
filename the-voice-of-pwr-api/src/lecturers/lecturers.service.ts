@@ -4,6 +4,12 @@ import { UpdateLecturerDto } from './dto/update-lecturer.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { Lecturer } from 'generated/prisma/client';
 
+const lecturerInclude = {
+  faculties: { include: { faculty: true } },
+  classes: { include: { course: true } },
+  opinions: { include: { user: { select: { name: true } } } },
+} as const;
+
 @Injectable()
 export class LecturersService {
   constructor(private databaseService: DatabaseService) {}
@@ -18,13 +24,16 @@ export class LecturersService {
     });
   }
 
-  async findAll(): Promise<Lecturer[]> {
-    return this.databaseService.lecturer.findMany();
+  async findAll() {
+    return this.databaseService.lecturer.findMany({
+      include: lecturerInclude,
+    });
   }
 
-  async findOne(id: number): Promise<Lecturer> {
+  async findOne(id: number) {
     const lecturer = await this.databaseService.lecturer.findUnique({
       where: { id },
+      include: lecturerInclude,
     });
     if (!lecturer) {
       throw new NotFoundException(`Lecturer with id ${id} not found`);

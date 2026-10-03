@@ -5,6 +5,7 @@ import {
   gradeColor,
   opinionLabel,
 } from "@/components/LecturerPreview";
+
 export default function LecturerHeader({
   lecturer,
 }: {
