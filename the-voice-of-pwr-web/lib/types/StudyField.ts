@@ -7,20 +7,13 @@ export type StudyField = {
   id: string;
   name: string;
   facultyId: string;
-  degree: "I stopień";
-  form: "stacjonarne";
-  languages: ("pl" | "en")[];
-  semesters: number | null;
-  programFile: string | null;
 };
 
 export type Course = {
   id: string;
   name: string;
   studyFieldId: string;
-  code: string | null;
-  semester: number | null;
-  ects: number | null;
+  semester: string | null;
 };
 
 export type CourseReview = {
