@@ -49,8 +49,7 @@ export const MOCK_THREADS: Record<string, Thread> = {
         author: "Kasia_Studia",
         role: "Studentka PWr",
         time: "5 min temu",
-        content:
-          "Mam gdzieś stare zadania z ćwiczeń, mogę później wrzucić.",
+        content: "Mam gdzieś stare zadania z ćwiczeń, mogę później wrzucić.",
         likes: 3,
       },
     ],

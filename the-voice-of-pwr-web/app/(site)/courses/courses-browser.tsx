@@ -70,10 +70,7 @@ export default function CoursesBrowser({
 
         <section className="space-y-8">
           {filteredFaculties.map((faculty) => (
-            <Card
-              key={faculty.id}
-              className="border-[#263A99]/10 bg-white shadow-sm"
-            >
+            <Card key={faculty.id} className=" bg-white shadow-sm">
               <CardHeader className="border-b border-[#263A99]/10">
                 <div>
                   <CardTitle className="text-lg text-zinc-900">

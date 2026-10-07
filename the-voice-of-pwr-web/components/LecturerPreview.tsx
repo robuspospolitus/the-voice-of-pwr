@@ -14,7 +14,7 @@ export function opinionLabel(count: number) {
 }
 
 export function averageGrade(lecturer: LecturerDetails) {
-  const grades = lecturer.opinions?.map((opinion) => opinion.grade) ?? [];
+  const grades = lecturer?.opinions?.map((opinion) => opinion.grade) ?? [];
   if (grades.length === 0) return null;
   return grades.reduce((sum, grade) => sum + grade, 0) / grades.length;
 }
