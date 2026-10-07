@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateLecturerOpinionDto } from './dto/create-lecturer_opinion.dto';
 import { UpdateLecturerOpinionDto } from './dto/update-lecturer_opinion.dto';
 import { DatabaseService } from 'src/database/database.service';
@@ -22,14 +26,29 @@ export class LecturerOpinionsService {
       );
     }
 
-    return this.databaseService.lecturerOpinion.create({
-      data: {
-        userId,
-        lecturerId: createLecturerOpinionDto.lecturerId,
-        stars: createLecturerOpinionDto.stars,
-        description: createLecturerOpinionDto.description,
-      },
-    });
+    try {
+      return await this.databaseService.lecturerOpinion.create({
+        data: {
+          userId,
+          lecturerId: createLecturerOpinionDto.lecturerId,
+          stars: createLecturerOpinionDto.stars,
+          description: createLecturerOpinionDto.description,
+        },
+        include: { user: { select: { name: true } } },
+      });
+    } catch (error) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'This user already reviewed this lecturer',
+        );
+      }
+      throw error;
+    }
   }
 
   async findAll(): Promise<LecturerOpinion[]> {

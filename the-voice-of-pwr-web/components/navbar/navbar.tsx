@@ -1,12 +1,24 @@
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "cn";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import LogoutButton from "./LogoutButton";
 
-export default function NavBar() {
+export default async function NavBar() {
+  const loggedIn = Boolean((await cookies()).get("accessToken")?.value);
+
+  function logout() {
+    document.cookie = "accessToken=; Path=/; Max-Age=0";
+    localStorage.removeItem("accessToken");
+  }
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#263A99]/10 bg-[#E6E5F0]/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-bold tracking-tight text-zinc-900">
+          <Link
+            href="/"
+            className="text-lg font-bold tracking-tight text-zinc-900"
+          >
             Głos<span className="text-[#263A99] font-bold">PWr</span>
           </Link>
 
@@ -42,16 +54,33 @@ export default function NavBar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            className="hidden sm:inline-flex text-sm font-medium text-zinc-700 hover:text-[#263A99] hover:bg-[#97B4DE]/20"
-          >
-            Zaloguj się
-          </Button>
-
-          <Button className="bg-[#263A99] text-white hover:bg-[#263A99]/90 text-sm font-medium shadow-none h-9 px-4 rounded-md">
-            Rejestracja
-          </Button>
+          {loggedIn ? (
+            <>
+              <LogoutButton />
+            </>
+          ) : (
+            <>
+              {" "}
+              <Link
+                href="/signin"
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "hidden sm:inline-flex text-sm font-medium text-zinc-700 hover:text-[#263A99] hover:bg-[#97B4DE]/20",
+                )}
+              >
+                Zaloguj się
+              </Link>
+              <Link
+                href="/signup"
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "hidden sm:inline-flex text-sm font-medium text-zinc-700 hover:text-[#263A99] hover:bg-[#97B4DE]/20",
+                )}
+              >
+                Zarejestruj się
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

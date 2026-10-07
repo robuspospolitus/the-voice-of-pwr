@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Card,
@@ -13,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { opinionSchema, opinionFormValues } from "@/lib/schema/opinionSchema";
 import FormsHeader from "./layout/FormsHeader";
 import type { LecturerOpinion } from "@/lib/types/lecturer";
+import { createLecturerOpinion } from "@/lib/api/lecturers";
 
 interface InputField {
   label: string;
@@ -53,6 +55,8 @@ export default function OpinionForm({
   lecturerId,
   onAdd,
 }: OpinionFormProps) {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const {
     watch,
     register,
@@ -65,16 +69,18 @@ export default function OpinionForm({
   });
 
   const onSubmit = async (values: opinionFormValues) => {
-    onAdd({
-      id: crypto.randomUUID(),
-      userId: 0,
-      lecturerId,
-      grade: Number(values.grade),
-      title: values.title,
+    setSubmitError(null);
+    const result = await createLecturerOpinion({
+      lecturerId: Number(lecturerId),
+      stars: Number(values.grade),
       description: values.description,
-      user: { name: "" },
-      date: new Date().toISOString().slice(0, 10),
+      title: values.title,
     });
+    if (!result.ok) {
+      setSubmitError(result.message);
+      return;
+    }
+    onAdd(result.opinion);
     reset();
     onSuccess?.();
   };
@@ -146,6 +152,9 @@ export default function OpinionForm({
                 )}
               </div>
             ))}
+            {submitError && (
+              <p className="text-sm text-red-500">{submitError}</p>
+            )}
             <Button variant="form" type="submit">
               Zapisz opinę
             </Button>
